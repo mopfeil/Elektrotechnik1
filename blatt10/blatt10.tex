@@ -224,7 +224,7 @@ Gar nicht: $I_0 = \SI{50}{mA}$. Kontrolle: Mit Kurzschluss ist $R_\text{ges} = R
 \end{loesung}
 
 % -------------------------------------------------------------------
-\begin{aufgabe}{Widerstand im Brückenzweig}{14}
+\begin{aufgabe}{Widerstand im Brückenzweig}{18}
 In der nicht abgeglichenen Brücke soll der Strom $I_5$ im Brückenwiderstand $R_5$ bestimmt werden.
 \begin{center}
 \begin{circuitikz}
@@ -240,6 +240,9 @@ In der nicht abgeglichenen Brücke soll der Strom $I_5$ im Brückenwiderstand $R
   \item Bestimmen Sie den Innenwiderstand $R_i$ der Restschaltung zwischen A und B.
   \item Berechnen Sie $I_5$ und die Spannung an $R_5$. In welche Richtung fließt der Strom tatsächlich?
   \item Welcher Wert von $R_5$ würde die größte Leistung aufnehmen? Wie groß wäre sie?
+  \item \emph{Rückblick auf Aufgabe 7.3\,d):} Dort war eine Brücke mit derselben Struktur verstimmt worden:
+        $U_0 = \SI{10}{V}$, $R_1 = \SI{100}{\ohm}$, $R_2 = \SI{200}{\ohm}$, $R_3 = R_4 = \SI{400}{\ohm}$, $R_5 = \SI{150}{\ohm}$.
+        Über die Potentiale hatten Sie nur die Stromrichtung bestimmt. Berechnen Sie jetzt $I_5$ und $U_5$ mit derselben Methode wie in a)--c).
 \end{teilaufgaben}
 \end{aufgabe}
 
@@ -271,6 +274,24 @@ Leistungsanpassung: $R_5 = R_i = \ergebnis{\SI{1.75}{k\ohm}}$,
 \[
   P_\text{max} = \frac{U_{AB,0}^2}{4R_i} = \frac{(\SI{3}{V})^2}{\SI{7}{k\ohm}} \approx \ergebnis{\SI{1.29}{mW}}
 \]
+\schritt{e) Die verstimmte Brücke aus Aufgabe 7.3}
+\leitfrage{Welche drei Schritte haben Sie in a)--c) gemacht? Genau diese wiederholen Sie jetzt mit neuen Zahlen.}
+Leerlaufspannung (zwei unbelastete Spannungsteiler):
+\[
+  U_{A0} = \SI{10}{V}\cdot\frac{200}{300} \approx \SI{6.67}{V},\qquad
+  U_{B0} = \SI{10}{V}\cdot\frac{400}{800} = \SI{5}{V}
+  \quad\Rightarrow\quad U_{AB,0} = U_{A0}-U_{B0} \approx \SI{1.67}{V}
+\]
+Innenwiderstand (Quelle kurzgeschlossen):
+\[
+  R_i = R_1\|R_2 + R_3\|R_4 = \SI{66.7}{\ohm} + \SI{200}{\ohm} \approx \SI{266.7}{\ohm}
+\]
+Strom und Spannung im Brückenzweig:
+\[
+  I_5 = \frac{U_{AB,0}}{R_i+R_5} = \frac{\SI{1.667}{V}}{\SI{416.7}{\ohm}} = \ergebnis{\SI{4}{mA}},\qquad
+  U_5 = R_5 I_5 = \ergebnis{\SI{0.6}{V}}
+\]
+Das positive Vorzeichen bestätigt die Überlegung aus Aufgabe 7.3\,d): Der Strom fließt von A (links) nach B (rechts). Die Rechnung zeigt aber auch, dass der Strom kleiner ist, als die Leerlaufspannung allein vermuten lässt: Sobald $R_5$ angeschlossen ist, zieht er die beiden Brückenpunkte aufeinander zu (an $R_5$ liegen nur noch $\SI{0.6}{V}$ statt $\SI{1.67}{V}$).
 \typfehler{Beim Innenwiderstand $R_1+R_2$ parallel zu $R_3+R_4$ rechnen -- das wäre der Widerstand, den die \emph{Quelle} sieht, nicht der zwischen A und B. Das Vorzeichen von $U_{AB,0}$ unterschlagen und so die Stromrichtung falsch angeben.}
 \end{loesung}
 
