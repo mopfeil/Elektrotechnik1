@@ -1,0 +1,267 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{get-uebung}
+
+\blatt{9}{Überlagerungssatz}{Kap.~2.10}
+
+\begin{document}
+
+\blattkopf{
+  \item Quellen korrekt deaktivieren (Spannungsquelle $\to$ Kurzschluss, Stromquelle $\to$ Leerlauf),
+  \item Ströme und Spannungen in Netzwerken mit mehreren Quellen durch Überlagerung von Teilergebnissen berechnen,
+  \item die Vorzeichen der Teilergebnisse mit Hilfe der Zählpfeile sicher bestimmen,
+  \item begründen, warum Leistungen \emph{nicht} überlagert werden dürfen.
+}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Zwei Spannungsquellen}{15}
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[V, v<=$U_1$] (0,3) to[R, l=$R_1$, i=$I_1$] (3,3)
+        to[R, l=$R_2$, i=$I_2$] (6,3) to[V, v=$U_2$] (6,0) -- (0,0);
+  \draw (3,3) to[R, l_=$R_3$, v^=$U_3$, i>_=$I_3$, *-*] (3,0);
+\end{circuitikz}
+\end{center}
+\gegeben{$U_1 = \SI{12}{V}$, $U_2 = \SI{6}{V}$, $R_1 = \SI{4}{\ohm}$, $R_2 = \SI{2}{\ohm}$, $R_3 = \SI{4}{\ohm}$}
+\begin{teilaufgaben}
+  \item Zeichnen Sie die beiden Teilschaltungen, in denen jeweils nur eine Quelle aktiv ist.
+  \item Berechnen Sie in beiden Teilschaltungen die Spannung $U_3$ (Teilergebnisse $U_3'$ und $U_3''$) und daraus $U_3$ und $I_3$.
+  \item Bestimmen Sie auf dieselbe Weise die Ströme $I_1$ und $I_2$. Kontrollieren Sie Ihr Ergebnis mit dem Knotensatz.
+  \item Berechnen Sie die Leistung $P_3$ in $R_3$. Vergleichen Sie mit der Summe $P_3' + P_3''$ der Leistungen aus den Teilschaltungen. Was folgt daraus?
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Teilschaltungen}
+\leitfrage{Wodurch wird eine deaktivierte \emph{Spannungs}quelle ersetzt? (Eselsbrücke: „Lass den Kreis der Quelle weg!“)}
+Eine deaktivierte Spannungsquelle liefert $U = 0$, sie wird also zum Kurzschluss:
+\begin{center}
+\begin{circuitikz}[scale=0.75, transform shape]
+  \draw (0,0) to[V, v<=$U_1$] (0,3) to[R, l=$R_1$, i=$I_1'$] (3,3)
+        to[R, l=$R_2$, i=$I_2'$] (5,3) -- (5,0) -- (0,0);
+  \draw (3,3) to[R, l_=$R_3$, v^=$U_3'$, *-*] (3,0);
+  \node at (2.5,-0.7) {nur $U_1$ aktiv};
+\end{circuitikz}
+\hspace{1.2cm}
+\begin{circuitikz}[scale=0.75, transform shape]
+  \draw (0,0) -- (0,3) to[R, l=$R_1$, i=$I_1''$] (2,3)
+        to[R, l=$R_2$, i=$I_2''$] (5,3) to[V, v=$U_2$] (5,0) -- (0,0);
+  \draw (2,3) to[R, l_=$R_3$, v^=$U_3''$, *-*] (2,0);
+  \node at (2.5,-0.7) {nur $U_2$ aktiv};
+\end{circuitikz}
+\end{center}
+\schritt{b) Teilspannungen $U_3'$ und $U_3''$}
+\leitfrage{Welche Widerstände liegen in der linken Teilschaltung parallel, welche in Reihe?}
+Nur $U_1$: Der rechte Anschluss von $R_2$ ist über den Kurzschluss mit dem unteren Knoten verbunden, $R_2$ liegt also parallel zu $R_3$. Spannungsteiler aus $R_1$ und $R_2\parallel R_3 = \SI{4}{\ohm}\cdot\SI{2}{\ohm}/\SI{6}{\ohm} = \SI{1.33}{\ohm}$:
+\[
+  U_3' = U_1\cdot\frac{R_2\parallel R_3}{R_1 + R_2\parallel R_3} = \SI{12}{V}\cdot\frac{\SI{1.33}{\ohm}}{\SI{5.33}{\ohm}} = \SI{3}{V}
+\]
+Nur $U_2$: Jetzt liegt $R_1$ parallel zu $R_3$: $R_1\parallel R_3 = \SI{2}{\ohm}$.
+\[
+  U_3'' = U_2\cdot\frac{R_1\parallel R_3}{R_2 + R_1\parallel R_3} = \SI{6}{V}\cdot\frac{\SI{2}{\ohm}}{\SI{4}{\ohm}} = \SI{3}{V}
+\]
+Beide Quellen haben ihren Pluspol oben, beide Teilspannungen sind also positiv bezüglich des Pfeils $U_3$:
+\[
+  U_3 = U_3' + U_3'' = \ergebnis{\SI{6}{V}}, \qquad I_3 = \frac{U_3}{R_3} = \ergebnis{\SI{1.5}{A}}
+\]
+\schritt{c) Ströme $I_1$ und $I_2$}
+Nur $U_1$: $I_1' = (U_1 - U_3')/R_1 = \SI{9}{V}/\SI{4}{\ohm} = \SI{2.25}{A}$; $I_2' = U_3'/R_2 = \SI{3}{V}/\SI{2}{\ohm} = \SI{1.5}{A}$.\\
+Nur $U_2$: Der Strom fließt jetzt von rechts nach links, also \emph{gegen} die Pfeile $I_1$ und $I_2$:
+\[
+  I_1'' = -\frac{U_3''}{R_1} = -\frac{\SI{3}{V}}{\SI{4}{\ohm}} = -\SI{0.75}{A}, \qquad
+  I_2'' = -\frac{U_2 - U_3''}{R_2} = -\frac{\SI{3}{V}}{\SI{2}{\ohm}} = -\SI{1.5}{A}
+\]
+Überlagerung:
+\[
+  I_1 = \SI{2.25}{A} - \SI{0.75}{A} = \ergebnis{\SI{1.5}{A}}, \qquad
+  I_2 = \SI{1.5}{A} - \SI{1.5}{A} = \ergebnis{\SI{0}{A}}
+\]
+Knotensatz am oberen Knoten: $I_1 = I_2 + I_3 \Rightarrow \SI{1.5}{A} = \SI{0}{A} + \SI{1.5}{A}$ \checkmark\\
+Anschaulich: $U_3 = \SI{6}{V} = U_2$ -- an $R_2$ liegt keine Spannung, also fließt kein Strom.
+\schritt{d) Leistung -- die Falle}
+\[
+  P_3 = \frac{U_3^2}{R_3} = \frac{(\SI{6}{V})^2}{\SI{4}{\ohm}} = \ergebnis{\SI{9}{W}}, \qquad
+  P_3' + P_3'' = \frac{(\SI{3}{V})^2}{\SI{4}{\ohm}} + \frac{(\SI{3}{V})^2}{\SI{4}{\ohm}} = \SI{4.5}{W} \neq P_3
+\]
+Der Überlagerungssatz gilt nur für Größen, die \emph{linear} von den Quellen abhängen (Ströme und Spannungen). Die Leistung hängt quadratisch ab: $(U_3' + U_3'')^2 \neq U_3'^2 + U_3''^2$. Leistungen werden deshalb immer erst \emph{nach} der Überlagerung aus dem Gesamtstrom bzw.\ der Gesamtspannung berechnet.
+\typfehler{Die nicht aktive Spannungsquelle einfach mit ihren Leitungen entfernen (Leerlauf statt Kurzschluss). Und: Teilströme ohne Blick auf den Zählpfeil addieren -- prüfen Sie für jede Teilschaltung, ob der Strom in oder gegen die Pfeilrichtung fließt.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Spannungs- und Stromquelle gemischt}{18}
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[V, v<=$U$] (0,3) to[R, l=$R_1$] (3,3)
+        to[R, l=$R_3$, i=$I_3$] (6,3);
+  \draw (3,3) to[R, l_=$R_2$, v^=$U_A$, *-*] (3,0);
+  \draw (6,3) to[R, l_=$R_4$, v^=$U_B$, *-*] (6,0);
+  \draw (8,0) to[I, i=$I_q$] (8,3) -- (6,3);
+  \draw (0,0) -- (8,0);
+  \node[above] at (3,3.35) {A};
+  \node[above] at (6,3.35) {B};
+\end{circuitikz}
+\end{center}
+\gegeben{$U = \SI{16}{V}$, $I_q = \SI{1}{A}$, $R_1 = R_2 = R_4 = \SI{20}{\ohm}$, $R_3 = \SI{10}{\ohm}$}
+\begin{teilaufgaben}
+  \item Wodurch ersetzen Sie die Stromquelle, wenn nur die Spannungsquelle wirkt? Zeichnen Sie beide Teilschaltungen.
+  \item Berechnen Sie in der Teilschaltung „nur $U$“ die Spannungen $U_A'$, $U_B'$ und den Strom $I_3'$.
+  \item Berechnen Sie in der Teilschaltung „nur $I_q$“ die Spannungen $U_A''$, $U_B''$ und den Strom $I_3''$.
+  \item Geben Sie $U_A$, $U_B$ und $I_3$ an. In welche Richtung fließt der Strom durch $R_3$ tatsächlich?
+  \item Welche Leistung gibt die Stromquelle ab?
+\end{teilaufgaben}
+\begin{tipp}Zeichnen Sie jede Teilschaltung sauber neu und suchen Sie nach Reihen- und Parallelschaltungen. Mit Spannungs- und Stromteiler kommen Sie dann ohne Gleichungssystem aus.\end{tipp}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Teilschaltungen}
+Eine deaktivierte Stromquelle liefert $I = 0$ -- sie wird zum \emph{Leerlauf} (Zweig einfach weglassen). Die deaktivierte Spannungsquelle wird zum Kurzschluss:
+\begin{center}
+\begin{circuitikz}[scale=0.7, transform shape]
+  \draw (0,0) to[V, v<=$U$] (0,3) to[R, l=$R_1$] (2.5,3) to[R, l=$R_3$, i=$I_3'$] (5,3);
+  \draw (2.5,3) to[R, l_=$R_2$, v^=$U_A'$, *-*] (2.5,0);
+  \draw (5,3) to[R, l_=$R_4$, v^=$U_B'$] (5,0) -- (0,0);
+  \node at (2.5,-0.7) {nur $U$ aktiv ($I_q$ = Leerlauf)};
+\end{circuitikz}
+\hspace{0.8cm}
+\begin{circuitikz}[scale=0.7, transform shape]
+  \draw (0,0) -- (0,3) to[R, l=$R_1$] (2.5,3) to[R, l=$R_3$, i=$I_3''$] (5,3);
+  \draw (2.5,3) to[R, l_=$R_2$, v^=$U_A''$, *-*] (2.5,0);
+  \draw (5,3) to[R, l_=$R_4$, v^=$U_B''$, *-*] (5,0);
+  \draw (7,0) to[I, i=$I_q$] (7,3) -- (5,3);
+  \draw (0,0) -- (7,0);
+  \node at (3.5,-0.7) {nur $I_q$ aktiv ($U$ = Kurzschluss)};
+\end{circuitikz}
+\end{center}
+\schritt{b) Nur $U$ aktiv}
+\leitfrage{Welchen Widerstand „sieht“ der Knoten A nach rechts unten?}
+$R_3$ und $R_4$ liegen in Reihe ($\SI{30}{\ohm}$), parallel dazu $R_2$: $\SI{20}{\ohm}\parallel\SI{30}{\ohm} = \SI{12}{\ohm}$. Spannungsteiler mit $R_1$:
+\[
+  U_A' = \SI{16}{V}\cdot\frac{\SI{12}{\ohm}}{\SI{20}{\ohm}+\SI{12}{\ohm}} = \SI{6}{V}, \qquad
+  I_3' = \frac{U_A'}{R_3+R_4} = \frac{\SI{6}{V}}{\SI{30}{\ohm}} = \SI{0.2}{A}, \qquad
+  U_B' = R_4\cdot I_3' = \SI{4}{V}
+\]
+\schritt{c) Nur $I_q$ aktiv}
+Jetzt liegen $R_1$ und $R_2$ parallel ($\SI{10}{\ohm}$), in Reihe dazu $R_3$ ($\SI{20}{\ohm}$), und das parallel zu $R_4$:
+\[
+  R_B = \SI{20}{\ohm}\parallel\SI{20}{\ohm} = \SI{10}{\ohm} \quad\Rightarrow\quad U_B'' = I_q\cdot R_B = \SI{10}{V}
+\]
+Strom durch den linken Zweig (von B nach A, also \emph{gegen} den Pfeil $I_3$):
+\[
+  I_3'' = -\frac{U_B''}{R_3 + R_1\parallel R_2} = -\frac{\SI{10}{V}}{\SI{20}{\ohm}} = -\SI{0.5}{A}, \qquad
+  U_A'' = \SI{0.5}{A}\cdot\SI{10}{\ohm} = \SI{5}{V}
+\]
+\schritt{d) Überlagerung}
+\[
+  U_A = \SI{6}{V} + \SI{5}{V} = \ergebnis{\SI{11}{V}}, \qquad
+  U_B = \SI{4}{V} + \SI{10}{V} = \ergebnis{\SI{14}{V}}, \qquad
+  I_3 = \SI{0.2}{A} - \SI{0.5}{A} = \ergebnis{-\SI{0.3}{A}}
+\]
+Das negative Vorzeichen bedeutet: Der Strom fließt tatsächlich von B nach A. Das passt zu $U_B > U_A$.
+Kontrolle mit dem Ohmschen Gesetz: $I_3 = (U_A - U_B)/R_3 = \SI{-3}{V}/\SI{10}{\ohm} = \SI{-0.3}{A}$ \checkmark
+\schritt{e) Leistung der Stromquelle}
+An der Stromquelle liegt $U_B$ an; Strom- und Spannungspfeil (gedacht von oben nach unten) bilden ein Erzeugerzählpfeilsystem:
+\[
+  P_{I_q} = U_B\cdot I_q = \SI{14}{V}\cdot\SI{1}{A} = \ergebnis{\SI{14}{W}} \ \text{(abgegeben)}
+\]
+Die Spannung an der Stromquelle stellt sich erst durch die \emph{gesamte} Schaltung ein -- auch hier darf man nicht mit Teilergebnissen rechnen.
+\typfehler{Die Stromquelle durch einen Kurzschluss ersetzen -- dann wäre $R_4$ kurzgeschlossen und $U_B' = 0$. Merke: Spannungsquelle $\to$ Kurzschluss, Stromquelle $\to$ Leerlauf.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Drei Quellen an einem Knoten}{17}
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[V, v<=$U_1$] (0,2) to[R, l=$R_1$] (0,4) -- (7.5,4);
+  \draw (2.5,0) to[V, v=$U_2$] (2.5,2) to[R, l=$R_2$] (2.5,4);
+  \draw (5,4) to[R, l_=$R_3$, v^=$U_A$, i>_=$I_3$, *-*] (5,0);
+  \draw (7.5,0) to[I, i=$I_q$] (7.5,4);
+  \draw (0,0) -- (7.5,0);
+  \fill (2.5,4) circle (1.5pt) (2.5,0) circle (1.5pt);
+\end{circuitikz}
+\end{center}
+\gegeben{$U_1 = \SI{12}{V}$, $U_2 = \SI{6}{V}$, $I_q = \SI{2}{A}$, $R_1 = \SI{6}{\ohm}$, $R_2 = \SI{3}{\ohm}$, $R_3 = \SI{2}{\ohm}$}
+\begin{teilaufgaben}
+  \item Achten Sie auf die Polung von $U_2$! Welches Vorzeichen erwarten Sie für den Beitrag von $U_2$ zu $U_A$?
+  \item Berechnen Sie die drei Teilbeiträge $U_A'$ (nur $U_1$), $U_A''$ (nur $U_2$) und $U_A'''$ (nur $I_q$).
+  \item Geben Sie $U_A$ und $I_3$ an.
+  \item Auf welchen Wert muss $U_1$ erhöht werden, damit $I_3 = \SI{2}{A}$ wird? Nutzen Sie die Linearität aus, ohne neu zu rechnen.
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Polung von $U_2$}
+Der Spannungspfeil von $U_2$ zeigt nach oben, der Pluspol liegt also \emph{unten}. $U_2$ zieht den Knoten A unter das Bezugspotential -- der Beitrag $U_A''$ ist negativ.
+\schritt{b) Drei Teilschaltungen}
+\begin{center}
+\begin{circuitikz}[scale=0.7, transform shape]
+  \draw (0,0) to[V, v<=$U_1$] (0,2) to[R, l=$R_1$] (0,4) -- (4,4);
+  \draw (2,0) node[circ]{} -- (2,2) to[R, l=$R_2$, -*] (2,4);
+  \draw (4,4) to[R, l_=$R_3$, v^=$U_A'$] (4,0) -- (0,0);
+  \node at (2,-0.8) {\Large nur $U_1$};
+\end{circuitikz}
+\hfill
+\begin{circuitikz}[scale=0.7, transform shape]
+  \draw (0,0) -- (0,2) to[R, l=$R_1$] (0,4) -- (4,4);
+  \draw (2,0) to[V, v=$U_2$] (2,2) to[R, l=$R_2$, -*] (2,4);
+  \draw (4,4) to[R, l_=$R_3$, v^=$U_A''$] (4,0) -- (0,0);
+  \fill (2,0) circle (2pt);
+  \node at (2,-0.8) {\Large nur $U_2$};
+\end{circuitikz}
+\hfill
+\begin{circuitikz}[scale=0.7, transform shape]
+  \draw (0,0) -- (0,2) to[R, l=$R_1$] (0,4) -- (6,4);
+  \draw (2,0) node[circ]{} -- (2,2) to[R, l=$R_2$, -*] (2,4);
+  \draw (4,4) to[R, l_=$R_3$, v^=$U_A'''$, *-*] (4,0);
+  \draw (6,0) to[I, i=$I_q$] (6,4);
+  \draw (0,0) -- (6,0);
+  \node at (3,-0.8) {\Large nur $I_q$};
+\end{circuitikz}
+\end{center}
+Nur $U_1$: $R_2\parallel R_3 = \SI{3}{\ohm}\cdot\SI{2}{\ohm}/\SI{5}{\ohm} = \SI{1.2}{\ohm}$
+\[
+  U_A' = U_1\cdot\frac{\SI{1.2}{\ohm}}{\SI{6}{\ohm}+\SI{1.2}{\ohm}} = \SI{12}{V}\cdot\frac{1}{6} = \SI{2}{V}
+\]
+Nur $U_2$: $R_1\parallel R_3 = \SI{6}{\ohm}\cdot\SI{2}{\ohm}/\SI{8}{\ohm} = \SI{1.5}{\ohm}$, Vorzeichen negativ (siehe a):
+\[
+  U_A'' = -U_2\cdot\frac{\SI{1.5}{\ohm}}{\SI{3}{\ohm}+\SI{1.5}{\ohm}} = -\SI{6}{V}\cdot\frac{1}{3} = -\SI{2}{V}
+\]
+Nur $I_q$: Alle drei Widerstände liegen parallel, $R_1\parallel R_2\parallel R_3$: $\frac{1}{6}+\frac{1}{3}+\frac{1}{2} = \SI{1}{S}$, also $\SI{1}{\ohm}$:
+\[
+  U_A''' = I_q\cdot\SI{1}{\ohm} = \SI{2}{V}
+\]
+\schritt{c) Überlagerung}
+\[
+  U_A = \SI{2}{V} - \SI{2}{V} + \SI{2}{V} = \ergebnis{\SI{2}{V}}, \qquad I_3 = \frac{U_A}{R_3} = \ergebnis{\SI{1}{A}}
+\]
+\schritt{d) Linearität ausnutzen}
+\leitfrage{Wie hängt der Beitrag $U_A'$ von $U_1$ ab?}
+$I_3 = \SI{2}{A}$ verlangt $U_A = \SI{4}{V}$. Die Beiträge von $U_2$ und $I_q$ ändern sich nicht (zusammen $\SI{0}{V}$), also muss $U_A' = \SI{4}{V}$ werden. Da $U_A'$ proportional zu $U_1$ ist ($U_A' = U_1/6$), muss $U_1$ verdoppelt werden:
+\[
+  U_1 = \ergebnis{\SI{24}{V}}
+\]
+\typfehler{Bei „nur $I_q$“ den Zweig mit $R_1$ oder $R_2$ vergessen: Die kurzgeschlossenen Spannungsquellen verbinden diese Widerstände mit dem unteren Knoten, sie bleiben also Teil der Schaltung. Bei d) die Linearität auf das Gesamtergebnis anwenden ($U_1$ verdoppeln $\Rightarrow$ $U_A$ verdoppelt) -- das gilt nur, wenn \emph{alle} Quellen gemeinsam skaliert werden.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Verständnisfragen}{8}
+Sind die folgenden Aussagen richtig oder falsch? Begründen Sie kurz.
+\begin{teilaufgaben}
+  \item Beim Überlagerungssatz werden nicht betrachtete Spannungsquellen durch einen Leerlauf ersetzt.
+  \item Der Innenwiderstand einer \emph{realen} Quelle bleibt beim Deaktivieren in der Schaltung.
+  \item Der Überlagerungssatz gilt auch für Schaltungen mit Glühlampen, deren Widerstand von der Temperatur abhängt.
+  \item Hat eine Schaltung drei Quellen, muss man drei Teilschaltungen berechnen.
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Falsch}
+Eine deaktivierte Spannungsquelle hat $U = 0$ -- das ist ein \emph{Kurzschluss}. Durch einen Leerlauf ersetzt man Stromquellen ($I = 0$).
+\schritt{b) Richtig}
+Deaktiviert wird nur die \emph{ideale} Quelle. Der Innenwiderstand ist ein gewöhnlicher Widerstand und bleibt in der Schaltung.
+\schritt{c) Falsch}
+Der Überlagerungssatz setzt eine \emph{lineare} Schaltung voraus. Ein temperaturabhängiger Widerstand ändert seinen Wert mit dem Strom, die Teilergebnisse dürfen dann nicht addiert werden.
+\schritt{d) Richtig (in der Regel)}
+Jede Quelle ist einmal allein aktiv. Man darf aber auch Gruppen bilden, z.\,B.\ zwei Quellen gemeinsam aktiv lassen und die dritte deaktivieren -- dann genügen zwei Teilschaltungen.
+\typfehler{Kurzschluss und Leerlauf vertauschen ist der häufigste Fehler beim Überlagerungssatz. Merkhilfe: Die deaktivierte Quelle liefert „nichts“ -- eine Spannungsquelle also $\SI{0}{V}$ (Draht), eine Stromquelle $\SI{0}{A}$ (Unterbrechung).}
+\end{loesung}
+
+\end{document}

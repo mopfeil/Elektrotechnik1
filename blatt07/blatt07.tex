@@ -1,0 +1,223 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{get-uebung}
+
+\blatt{7}{Wheatstonebrücke}{Kap.~2.7 und 2.13.4}
+
+% Brueckenschaltung: #1..#4 Beschriftung R oben links, unten links, oben rechts, unten rechts
+\newcommand{\bruecke}[4]{%
+  \draw (0,0) to[V, v<=$U_0$] (0,4) -- (5,4);
+  \draw (2,4) to[R, l_=#1, *-*] (2,2) to[R, l_=#2, -*] (2,0);
+  \draw (5,4) to[R, l=#3] (5,2) to[R, l=#4] (5,0) -- (0,0);}
+
+\begin{document}
+
+\blattkopf{
+  \item die Brückenspannung einer beliebigen Wheatstonebrücke über zwei Spannungsteiler berechnen,
+  \item die Abgleichbedingung $R_1/R_2 = R_3/R_4$ anwenden und unbekannte Widerstände bestimmen,
+  \item eine Schleifdrahtbrücke auswerten und den Vergleichswiderstand $R_N$ sinnvoll wählen,
+  \item erkennen, dass ein Bauelement im Brückenzweig einer abgeglichenen Brücke keinen Einfluss auf den Rest der Schaltung hat.
+}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Brückenspannung und Abgleich}{15}
+Gegeben ist die folgende Brückenschaltung mit $U_0 = \SI{12}{V}$, $R_1 = \SI{1}{k\ohm}$, $R_2 = \SI{2}{k\ohm}$, $R_3 = \SI{3}{k\ohm}$ und $R_4 = \SI{4}{k\ohm}$.
+\begin{center}
+\begin{circuitikz}
+  \bruecke{$R_1$}{$R_2$}{$R_3$}{$R_4$}
+  \draw (2,2) to[open, v=$U$, o-o] (5,2);
+\end{circuitikz}
+\end{center}
+\begin{teilaufgaben}
+  \item Begründen Sie, warum man die Spannungen an $R_2$ und $R_4$ mit der Spannungsteilerregel berechnen darf.
+  \item Berechnen Sie die Brückenspannung $U$.
+  \item Auf welchen Wert muss $R_4$ eingestellt werden, damit die Brücke abgeglichen ist ($U = 0$)? Weisen Sie $U=0$ nach.
+  \item Ausgehend vom Abgleich aus c) erhöht sich $R_4$ um $\SI{1}{\percent}$. Berechnen Sie $U$ mit Vorzeichen.
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Zwei unabhängige Spannungsteiler}
+\leitfrage{Fließt Strom über die Klemmen von $U$?}
+Nein, die Klemmen sind offen. Deshalb fließt durch $R_1$ und $R_2$ derselbe Strom und ebenso durch $R_3$ und $R_4$. Beide Zweige liegen direkt an $U_0$ -- es sind zwei voneinander unabhängige Spannungsteiler.
+\schritt{b) Brückenspannung}
+Spannungen an den unteren Widerständen:
+\[
+  U_{R2} = U_0\frac{R_2}{R_1+R_2} = \SI{12}{V}\cdot\frac{2}{3} = \SI{8}{V},\qquad
+  U_{R4} = U_0\frac{R_4}{R_3+R_4} = \SI{12}{V}\cdot\frac{4}{7} \approx \SI{6.857}{V}
+\]
+Maschensatz in der Masche $U \to R_4 \to R_2$ (Pfeil $U$ zeigt von links nach rechts):
+\[
+  U = U_{R2}-U_{R4} = \SI{8}{V}-\SI{6.857}{V} \approx \ergebnis{\SI{1.14}{V}}
+\]
+\schritt{c) Abgleich}
+Abgleich bedeutet $U_{R2} = U_{R4}$, also gleiche Teilerverhältnisse; daraus folgt $R_1/R_2 = R_3/R_4$:
+\[
+  R_4 = R_3\,\frac{R_2}{R_1} = \SI{3}{k\ohm}\cdot\frac{\SI{2}{k\ohm}}{\SI{1}{k\ohm}} = \ergebnis{\SI{6}{k\ohm}}
+\]
+Probe: $U_{R4} = \SI{12}{V}\cdot 6/9 = \SI{8}{V} = U_{R2}$ $\Rightarrow U = 0$ \checkmark
+\schritt{d) Verstimmte Brücke}
+$R_4 = \SI{6.06}{k\ohm}$:
+\[
+  U_{R4} = \SI{12}{V}\cdot\frac{6{,}06}{9{,}06} \approx \SI{8.0265}{V}\quad\Rightarrow\quad
+  U = \SI{8}{V}-\SI{8.0265}{V} \approx \ergebnis{\SI{-26.5}{mV}}
+\]
+Eine kleine Widerstandsänderung erzeugt eine gut messbare Spannung, die sich von null aus ändert. Darauf beruht der Einsatz von Brücken in der Sensorik (z.\,B.\ Dehnungsmessstreifen).
+\typfehler{Vorzeichen von $U$ raten statt über den Maschensatz bestimmen. Und: Die Abgleichbedingung über Kreuz aufstellen ($R_1/R_4 = R_2/R_3$) -- vergleichen Sie immer \emph{oben/unten} im linken mit \emph{oben/unten} im rechten Zweig.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Schleifdrahtbrücke und Wahl des Normwiderstands}{15}
+Ein unbekannter Widerstand $R_x$ wird mit einer Schleifdrahtbrücke gemessen. Der Schleifdraht ist $\SI{1}{m}$ lang; der Schleifer teilt ihn in die Anteile $(1-p)R$ oben und $pR$ unten. Als Nullindikator dient ein empfindlicher Spannungsmesser.
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[V, v<=$U_0$] (0,4) -- (5,4);
+  \draw (2,4) to[R, l_=$R_N$, *-*] (2,2) to[R, l_=$R_x$, -*] (2,0);
+  \draw (5,4) to[R, l_=$(1-p)R$] (5,2) to[R, l_=$pR$] (5,0) -- (0,0);
+  \draw (2,2) to[rmeter, t=V] (5,2) node[circ]{} node[right]{Schleifer};
+\end{circuitikz}
+\end{center}
+\begin{teilaufgaben}
+  \item Leiten Sie aus der Abgleichbedingung die Formel $R_x = \frac{p}{1-p}\,R_N$ her.
+  \item Mit $R_N = \SI{100}{\ohm}$ ist die Brücke bei einer Schleiferstellung von $\SI{62}{cm}$ (gemessen vom unteren Ende) abgeglichen. Wie groß ist $R_x$?
+  \item Die Schleiferstellung kann nur auf $\Delta p = \pm 0{,}001$ ($\pm\SI{1}{mm}$) genau abgelesen werden. Zeigen Sie, dass der relative Fehler von $R_x$
+        \[ \frac{\Delta R_x}{R_x} \approx \frac{\Delta p}{p(1-p)} \]
+        beträgt, und berechnen Sie ihn für $p = 0{,}62$, $p = 0{,}5$ und $p = 0{,}95$.
+  \item Ein Widerstand von etwa $\SI{820}{\ohm}$ soll gemessen werden. Zur Verfügung stehen $R_N = \SI{10}{\ohm}$, $\SI{100}{\ohm}$ und $\SI{1}{k\ohm}$. Welchen wählen Sie? Begründen Sie mit Zahlen.
+\end{teilaufgaben}
+\begin{tipp}Für c): Bilden Sie $\mathrm{d}R_x/\mathrm{d}p$ und setzen Sie $\Delta R_x \approx \dfrac{\mathrm{d}R_x}{\mathrm{d}p}\,\Delta p$.\end{tipp}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Formel herleiten}
+Abgleichbedingung „oben zu unten links = oben zu unten rechts“:
+\[
+  \frac{R_N}{R_x} = \frac{(1-p)R}{pR} = \frac{1-p}{p}
+  \quad\Rightarrow\quad \ergebnis{R_x = \frac{p}{1-p}\,R_N}
+\]
+Der Gesamtwiderstand $R$ des Schleifdrahts kürzt sich heraus -- man muss ihn nicht kennen.
+\schritt{b) Messwert}
+$p = 0{,}62$:\quad
+$R_x = \dfrac{0{,}62}{0{,}38}\cdot\SI{100}{\ohm} \approx \ergebnis{\SI{163.2}{\ohm}}$
+\schritt{c) Messunsicherheit}
+Ableitung mit der Quotientenregel:
+\[
+  \frac{\mathrm{d}R_x}{\mathrm{d}p} = R_N\,\frac{(1-p)+p}{(1-p)^2} = \frac{R_N}{(1-p)^2}
+  \quad\Rightarrow\quad
+  \frac{\Delta R_x}{R_x} \approx \frac{R_N\,\Delta p/(1-p)^2}{R_N\,p/(1-p)} = \frac{\Delta p}{p(1-p)}
+\]
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+$p$ & $0{,}62$ & $0{,}5$ & $0{,}95$\\\midrule
+$\Delta R_x/R_x$ & $\SI{0.42}{\percent}$ & $\SI{0.40}{\percent}$ & $\SI{2.1}{\percent}$\\\bottomrule
+\end{tabular}
+\end{center}
+Der Nenner $p(1-p)$ ist bei $p = 0{,}5$ maximal -- dort ist die Messung am genauesten (vgl.\ Skript Kap.~2.7).
+\schritt{d) Wahl des Normwiderstands}
+\leitfrage{Bei welcher Schleiferstellung $p$ wird die Brücke für $R_x \approx \SI{820}{\ohm}$ jeweils abgeglichen?}
+Aus a) folgt $p = R_x/(R_N+R_x)$:
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+$R_N$ & $\SI{10}{\ohm}$ & $\SI{100}{\ohm}$ & $\SI{1}{k\ohm}$\\\midrule
+$p$ & $0{,}988$ & $0{,}891$ & $0{,}451$\\
+$\Delta R_x/R_x$ & $\SI{8.4}{\percent}$ & $\SI{1.0}{\percent}$ & $\SI{0.40}{\percent}$\\\bottomrule
+\end{tabular}
+\end{center}
+\ergebnis{R_N = \SI{1}{k\ohm}}: Der Normwiderstand sollte etwa so groß wie der unbekannte Widerstand sein, dann liegt $p$ nahe $0{,}5$.
+\typfehler{$p$ vom falschen Ende aus ablesen: Hier gehört $p$ zum \emph{unteren} Teil, also zur Seite von $R_x$. Wer $0{,}38$ statt $0{,}62$ einsetzt, erhält $\SI{61.3}{\ohm}$.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Fiese Falle: Widerstand im Brückenzweig}{15}
+An $U_0 = \SI{10}{V}$ liegt die folgende Schaltung mit $R_1 = \SI{100}{\ohm}$, $R_2 = \SI{200}{\ohm}$, $R_3 = \SI{400}{\ohm}$, $R_4 = \SI{800}{\ohm}$ und $R_5 = \SI{150}{\ohm}$.
+\begin{center}
+\begin{circuitikz}
+  \bruecke{$R_1$}{$R_2$}{$R_3$}{$R_4$}
+  \draw (2,2) to[R, l=$R_5$, i=$I_5$, *-*] (5,2);
+  \draw (0,4) to[short, i=$I$] (1.2,4);
+\end{circuitikz}
+\end{center}
+\begin{teilaufgaben}
+  \item Zeigen Sie, dass die Brücke abgeglichen ist. Wie groß ist $I_5$?
+  \item Berechnen Sie den Gesamtwiderstand $R_\text{ges}$, den die Quelle sieht, auf zwei Wegen: einmal mit $R_5$ als Leerlauf, einmal mit $R_5$ als Kurzschluss.
+  \item Berechnen Sie den Quellenstrom $I$ sowie die Ströme durch den linken und den rechten Zweig.
+  \item Nun wird $R_4$ durch $\SI{400}{\ohm}$ ersetzt. Ist die Brücke noch abgeglichen? Fließt $I_5$ jetzt nach rechts oder nach links? (Begründung über die Potentiale genügt -- die Berechnung von $I_5$ folgt auf einem späteren Blatt.)
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Abgleich prüfen}
+$R_1/R_2 = 100/200 = 0{,}5$ und $R_3/R_4 = 400/800 = 0{,}5$ $\Rightarrow$ abgeglichen. Am Brückenzweig liegt keine Spannung, also
+\[
+  I_5 = \frac{U_{R5}}{R_5} = \ergebnis{0}
+\]
+\leitfrage{Wenn durch $R_5$ kein Strom fließt -- welchen Einfluss hat dann sein Wert auf den Rest der Schaltung?}
+Keinen. $R_5$ darf beliebig ersetzt werden, auch durch einen Leerlauf oder einen Kurzschluss (Skript Kap.~2.13.4).
+\schritt{b) Gesamtwiderstand auf zwei Wegen}
+$R_5$ als \emph{Leerlauf}: Zwei Reihenschaltungen parallel:
+\[
+  R_\text{ges} = (R_1+R_2)\parallel(R_3+R_4) = \SI{300}{\ohm}\parallel\SI{1200}{\ohm} = \frac{300\cdot 1200}{1500}\,\si{\ohm} = \ergebnis{\SI{240}{\ohm}}
+\]
+$R_5$ als \emph{Kurzschluss}: Zwei Parallelschaltungen in Reihe:
+\[
+  R_\text{ges} = (R_1\parallel R_3)+(R_2\parallel R_4) = \SI{80}{\ohm}+\SI{160}{\ohm} = \ergebnis{\SI{240}{\ohm}} \checkmark
+\]
+\schritt{c) Ströme}
+\[
+  I = \frac{U_0}{R_\text{ges}} = \frac{\SI{10}{V}}{\SI{240}{\ohm}} \approx \ergebnis{\SI{41.7}{mA}},\quad
+  I_\text{links} = \frac{\SI{10}{V}}{\SI{300}{\ohm}} \approx \SI{33.3}{mA},\quad
+  I_\text{rechts} = \frac{\SI{10}{V}}{\SI{1200}{\ohm}} \approx \SI{8.33}{mA}
+\]
+Kontrolle Knotensatz: $33{,}3 + 8{,}33 = 41{,}7$ \checkmark
+\schritt{d) Verstimmte Brücke}
+$R_3/R_4 = 400/400 = 1 \neq 0{,}5$ $\Rightarrow$ nicht mehr abgeglichen. Potentiale der Brückenpunkte gegenüber dem unteren Leiter (zunächst ohne $R_5$ betrachtet):
+\[
+  \varphi_\text{links} = \SI{10}{V}\cdot\frac{200}{300} \approx \SI{6.67}{V},\qquad
+  \varphi_\text{rechts} = \SI{10}{V}\cdot\frac{400}{800} = \SI{5}{V}
+\]
+Der linke Brückenpunkt liegt höher, also fließt $I_5$ \ergebnis{\text{von links nach rechts}}. Ab jetzt beeinflusst $R_5$ die ganze Schaltung -- der Trick aus b) ist nicht mehr erlaubt.
+\typfehler{$R_5$ „irgendwie“ in die Reihen-/Parallelrechnung einbauen: Ohne den Abgleich zu erkennen, ist die Schaltung weder eine reine Reihen- noch Parallelschaltung (man bräuchte die Stern-Dreieck-Umwandlung). Prüfen Sie bei jeder Brückenstruktur zuerst die Abgleichbedingung!}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Temperaturmessung mit einer Brücke}{12}
+Ein Platin-Messwiderstand hat die Kennlinie $R_\vartheta = R_0\,(1+\alpha\,\vartheta)$ mit $R_0 = \SI{100}{\ohm}$, $\alpha = \SI{3.9e-3}{1/K}$ und $\vartheta$ in $\si{\celsius}$. Er bildet den Widerstand unten links einer Brücke; die drei übrigen Widerstände sind $R_1 = R_3 = R_4 = \SI{100}{\ohm}$, und $U_0 = \SI{5}{V}$.
+\begin{center}
+\begin{circuitikz}
+  \bruecke{$R_1$}{$R_\vartheta$}{$R_3$}{$R_4$}
+  \draw (2,2) to[open, v=$U$, o-o] (5,2);
+\end{circuitikz}
+\end{center}
+\begin{teilaufgaben}
+  \item Stellen Sie $U$ allgemein als Funktion von $R_\vartheta$ auf.
+  \item Bei welcher Temperatur ist die Brücke abgeglichen?
+  \item Berechnen Sie $U$ für $\vartheta = \SI{50}{\celsius}$ und $\vartheta = \SI{100}{\celsius}$.
+  \item Ist $U$ proportional zur Temperatur? Vergleichen Sie $U(\SI{100}{\celsius})$ mit $2\cdot U(\SI{50}{\celsius})$.
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Brückenspannung allgemein}
+Wie in Aufgabe 7.1:
+\[
+  U = U_0\frac{R_\vartheta}{R_1+R_\vartheta} - U_0\frac{R_4}{R_3+R_4}
+    = \ergebnis{U_0\left(\frac{R_\vartheta}{R_0+R_\vartheta}-\frac12\right)}
+\]
+\schritt{b) Abgleich}
+$U = 0$ für $R_\vartheta = R_0 = \SI{100}{\ohm}$, also bei \ergebnis{\vartheta = \SI{0}{\celsius}}.
+\schritt{c) Zahlenwerte}
+\begin{align*}
+  \vartheta = \SI{50}{\celsius}:&\quad R_\vartheta = \SI{100}{\ohm}\cdot(1+0{,}195) = \SI{119.5}{\ohm},
+    & U &= \SI{5}{V}\left(\tfrac{119{,}5}{219{,}5}-\tfrac12\right) \approx \ergebnis{\SI{222}{mV}}\\
+  \vartheta = \SI{100}{\celsius}:&\quad R_\vartheta = \SI{139}{\ohm},
+    & U &= \SI{5}{V}\left(\tfrac{139}{239}-\tfrac12\right) \approx \ergebnis{\SI{408}{mV}}
+\end{align*}
+\schritt{d) Linearität}
+$2\cdot U(\SI{50}{\celsius}) \approx \SI{444}{mV}$, gemessen werden aber nur $\SI{408}{mV}$ (etwa $\SI{8}{\percent}$ weniger).
+\leitfrage{Woher kommt die Abweichung, obwohl $R_\vartheta$ linear von $\vartheta$ abhängt?}
+$R_\vartheta$ steht im Zähler \emph{und} im Nenner des Spannungsteilers. Die Brückenspannung ist daher nur für kleine Widerstandsänderungen näherungsweise proportional -- für genaue Messungen muss die Kennlinie korrigiert werden.
+\typfehler{$R_\vartheta = R_0\cdot\alpha\cdot\vartheta$ statt $R_0(1+\alpha\vartheta)$ rechnen. Kontrolle: Bei $\SI{0}{\celsius}$ muss $R_\vartheta = R_0$ herauskommen.}
+\end{loesung}
+
+\end{document}

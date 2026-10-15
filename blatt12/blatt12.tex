@@ -1,0 +1,328 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{get-uebung}
+
+\blatt{12}{Transiente Vorgänge an Kondensator und Spule}{Kap.~3.1--3.3}
+
+% Leeres Achsenkreuz zum Einzeichnen (nur auf dem Aufgabenblatt)
+% \leeresdiagramm{x-Beschriftung}{y-Beschriftung}
+\newcommand{\leeresdiagramm}[2]{%
+  \ifloesung\else
+  \begin{center}
+  \begin{tikzpicture}[>=Latex]
+    \draw[help lines,step=0.5,gray!25] (0,-0.5) grid (11,3.5);
+    \draw[->] (-0.2,0) -- (11.3,0) node[below left]{#1};
+    \draw[->] (0,-0.5) -- (0,3.8) node[left]{#2};
+  \end{tikzpicture}
+  \end{center}
+  \fi}
+
+% Achsenstil fuer die Loesungsplots
+\pgfplotsset{tplot/.style={width=11cm,height=5cm,axis lines=left,
+  grid=major,grid style={gray!25},xmin=-0.5,xmax=5.2,
+  xtick={0,1,2,3,4,5},
+  xticklabels={$t_0$,$\tau$,$2\tau$,$3\tau$,$4\tau$,$5\tau$},
+  every axis plot/.append style={thick,loesungfarbe,samples=120},
+  label style={font=\small},tick label style={font=\small}}}
+
+\begin{document}
+
+\blattkopf{
+  \item die Bauelementgleichungen $i_C = C\,\mathrm{d}u_C/\mathrm{d}t$ und $u_L = L\,\mathrm{d}i_L/\mathrm{d}t$ anwenden,
+  \item begründen, warum $u_C$ und $i_L$ stetig sind, und den eingeschwungenen Zustand mit „C = Leerlauf, L = Kurzschluss“ berechnen,
+  \item für Schaltungen mit einem Energiespeicher die Differentialgleichung aufstellen und mit dem Ansatz $x(t) = k_1 + k_2\,\mathrm{e}^{-(t-t_0)/\tau}$ lösen,
+  \item die Zeitkonstante $\tau$ direkt aus dem Widerstand \emph{aus Sicht des Speicherelements} ablesen und Verläufe skizzieren.
+}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Bauelementgleichungen und eingeschwungener Zustand}{12}
+\begin{teilaufgaben}
+  \item Die Spannung an einem Kondensator mit $C = \SI{10}{\micro F}$ steigt innerhalb von $\SI{2}{ms}$ linear von $\SI{0}{V}$ auf $\SI{20}{V}$. Welcher Strom fließt in dieser Zeit in den Kondensator?
+  \item Der Strom durch eine Spule mit $L = \SI{50}{mH}$ steigt innerhalb von $\SI{10}{ms}$ linear von $\SI{0}{A}$ auf $\SI{2}{A}$. Welche Spannung liegt dabei an der Spule an?
+  \item Begründen Sie mit den Bauelementgleichungen, warum die Kondensatorspannung und der Spulenstrom nicht springen können. Welche Größen \emph{dürfen} springen?
+  \item Die folgende Schaltung ist schon sehr lange in Betrieb (eingeschwungener Zustand). Berechnen Sie $I$, $u_L$, $u_C$ und $i_C$.
+\end{teilaufgaben}
+\gegeben{$U_0 = \SI{12}{V}$, $R_1 = \SI{2}{\ohm}$, $R_2 = \SI{6}{\ohm}$, $L = \SI{0.1}{H}$, $C = \SI{47}{\micro F}$}
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[V, v<=$U_0$] (0,3)
+        to[R, l=$R_1$, i=$I$] (2.6,3)
+        to[L, l=$L$, v=$u_L$] (5.2,3) -- (7.4,3)
+        to[short, i=$i_C$] (7.4,2.3)
+        to[C, l_=$C$, v^=$u_C$] (7.4,0) -- (0,0);
+  \draw (5.2,3) to[R, l_=$R_2$] (5.2,0);
+  \draw (5.2,3) node[circ]{} (5.2,0) node[circ]{};
+\end{circuitikz}
+\end{center}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Strom in den Kondensator}
+\leitfrage{Was ist $\mathrm{d}u_C/\mathrm{d}t$, wenn die Spannung \emph{linear} ansteigt?}
+Die Steigung ist konstant: $\dfrac{\mathrm{d}u_C}{\mathrm{d}t} = \dfrac{\SI{20}{V}}{\SI{2}{ms}} = \SI{10000}{V/s}$. Damit
+\[
+  i_C = C\,\frac{\mathrm{d}u_C}{\mathrm{d}t} = \SI{10e-6}{F}\cdot\SI{10000}{V/s} = \ergebnis{\SI{0.1}{A}}
+\]
+\schritt{b) Spannung an der Spule}
+\[
+  u_L = L\,\frac{\mathrm{d}i_L}{\mathrm{d}t} = \SI{0.05}{H}\cdot\frac{\SI{2}{A}}{\SI{10}{ms}} = \SI{0.05}{H}\cdot\SI{200}{A/s} = \ergebnis{\SI{10}{V}}
+\]
+\schritt{c) Stetigkeit}
+Ein Sprung von $u_C$ hieße $\mathrm{d}u_C/\mathrm{d}t \to \infty$ und damit $i_C \to \infty$ -- ein unendlich großer Strom ist physikalisch unmöglich (anschaulich: die Ladung auf den Platten kann sich nicht in null Zeit ändern). Genauso würde ein Sprung von $i_L$ eine unendlich große Spannung $u_L$ erfordern.\\
+\textbf{Stetig:} $u_C$ und $i_L$. \quad \textbf{Dürfen springen:} $i_C$, $u_L$ sowie alle Ströme und Spannungen an Widerständen.
+\schritt{d) Eingeschwungener Zustand}
+\leitfrage{Wie verhalten sich $C$ und $L$, wenn sich nichts mehr ändert ($\mathrm{d}/\mathrm{d}t = 0$)?}
+Der Kondensator wirkt wie ein Leerlauf ($i_C = 0$), die Spule wie ein Kurzschluss ($u_L = 0$). Übrig bleibt die Reihenschaltung $R_1 + R_2$:
+\[
+  i_C = \ergebnis{0}, \qquad u_L = \ergebnis{0}, \qquad
+  I = \frac{U_0}{R_1+R_2} = \frac{\SI{12}{V}}{\SI{8}{\ohm}} = \ergebnis{\SI{1.5}{A}}, \qquad
+  u_C = I\cdot R_2 = \ergebnis{\SI{9}{V}}
+\]
+Die Werte von $L$ und $C$ werden im eingeschwungenen Zustand gar nicht benötigt -- sie bestimmen nur, \emph{wie schnell} dieser Zustand erreicht wird.
+\typfehler{Den Kondensator als Kurzschluss und die Spule als Leerlauf behandeln (genau vertauscht). Merkhilfe: Der Kondensator besteht aus zwei isolierten Platten $\Rightarrow$ kein Gleichstrom; die Spule ist ein aufgewickelter Draht $\Rightarrow$ keine Gleichspannung.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Entladen eines Kondensators}{15}
+Der Kondensator $C = \SI{100}{\micro F}$ ist auf $U_0 = \SI{10}{V}$ geladen. Zum Zeitpunkt $t_0 = 0$ wird der Schalter geschlossen.
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[C, l=$C$, v<=$u_C$] (0,3)
+        to[closing switch, l={$t_0 = 0$}] (3.5,3)
+        to[R, l_=$R$, v^=$u_R$, i>_=$i$] (3.5,0) -- (0,0);
+\end{circuitikz}
+\end{center}
+\gegeben{$C = \SI{100}{\micro F}$, $R = \SI{2}{k\ohm}$, $u_C(t \le 0) = U_0 = \SI{10}{V}$}
+\begin{teilaufgaben}
+  \item Stellen Sie für $t > 0$ die Differentialgleichung für $u_C(t)$ auf. Achten Sie auf die Zählpfeile am Kondensator!
+  \item Lösen Sie die Differentialgleichung mit dem Ansatz $u_C(t) = k_1 + k_2\,\mathrm{e}^{-t/\tau}$. Bestimmen Sie $\tau$, $k_1$ und $k_2$.
+  \item Berechnen Sie $u_C$ zu den Zeitpunkten $t = \tau$, $3\tau$ und $5\tau$ (in V und in \% von $U_0$).
+  \item Nach welcher Zeit ist die Spannung auf $\SI{1}{V}$ gesunken?
+  \item Wie groß ist der Strom $i$ direkt nach dem Schließen? Welche Energie wird insgesamt im Widerstand in Wärme umgesetzt?
+  \item Skizzieren Sie $u_C(t)$ für $-\tau \le t \le 5\tau$.
+\end{teilaufgaben}
+\leeresdiagramm{$t$}{$u_C$}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Differentialgleichung aufstellen}
+\leitfrage{Der Strom $i$ fließt im Kondensator von unten nach oben, die Spannung $u_C$ zeigt nach unten. Welches Zählpfeilsystem liegt am Kondensator vor?}
+Strom- und Spannungspfeil zeigen am Kondensator in entgegengesetzte Richtungen (EZS -- der Kondensator gibt Energie ab). Die Bauelementgleichung bekommt deshalb ein Minuszeichen. Außerdem liegt $u_C$ direkt am Widerstand an ($u_R = u_C$):
+\[
+  i = -C\,\frac{\mathrm{d}u_C}{\mathrm{d}t}, \qquad u_C = u_R = R\cdot i
+  \quad\Rightarrow\quad u_C = -RC\,\frac{\mathrm{d}u_C}{\mathrm{d}t}
+  \quad\Rightarrow\quad \ergebnis{RC\,\frac{\mathrm{d}u_C}{\mathrm{d}t} + u_C = 0}
+\]
+\schritt{b) Lösung mit Randbedingungen}
+Vergleich mit der Standardform $\tau\,\dot x + x = \text{const}$ liefert die Zeitkonstante
+\[
+  \tau = RC = \SI{2000}{\ohm}\cdot\SI{100e-6}{F} = \ergebnis{\SI{0.2}{s}}
+\]
+\leitfrage{Welchen Wert hat $u_C$ für $t \to \infty$, welchen bei $t = 0$?}
+\begin{align*}
+  u_C(t\to\infty) &= k_1 = 0 && \text{(Kondensator vollständig entladen)}\\
+  u_C(0) &= k_1 + k_2 = U_0 && \text{(Stetigkeit: } u_C \text{ springt nicht)} \quad\Rightarrow\ k_2 = \SI{10}{V}
+\end{align*}
+\[
+  \ergebnis{u_C(t) = \SI{10}{V}\cdot \mathrm{e}^{-t/\SI{0.2}{s}}} \qquad (t \ge 0)
+\]
+\schritt{c) Werte nach $\tau$, $3\tau$, $5\tau$}
+\begin{center}
+\begin{tabular}{cccc}\toprule
+ $t$ & $\mathrm{e}^{-t/\tau}$ & $u_C$ & Anteil von $U_0$\\\midrule
+ $\tau = \SI{0.2}{s}$ & $\mathrm{e}^{-1}$ & $\SI{3.68}{V}$ & $\SI{36.8}{\percent}$\\
+ $3\tau = \SI{0.6}{s}$ & $\mathrm{e}^{-3}$ & $\SI{0.50}{V}$ & $\SI{5.0}{\percent}$\\
+ $5\tau = \SI{1.0}{s}$ & $\mathrm{e}^{-5}$ & $\SI{0.067}{V}$ & $\SI{0.67}{\percent}$\\\bottomrule
+\end{tabular}
+\end{center}
+Faustregel: Nach $5\tau$ ist der Vorgang praktisch abgeschlossen (Abweichung $< \SI{1}{\percent}$).
+\schritt{d) Zeitpunkt für $u_C = \SI{1}{V}$}
+\leitfrage{Wie löst man $\mathrm{e}^{-t_1/\tau} = 0{,}1$ nach $t_1$ auf?}
+Logarithmieren: $-t_1/\tau = \ln 0{,}1$, also
+\[
+  t_1 = -\tau\ln\frac{\SI{1}{V}}{\SI{10}{V}} = \tau\ln 10 = \SI{0.2}{s}\cdot 2{,}303 \approx \ergebnis{\SI{0.46}{s}}
+\]
+\schritt{e) Anfangsstrom und Energie}
+Bei $t = 0^+$ ist $u_C = \SI{10}{V}$ (stetig!), also $i(0^+) = U_0/R = \SI{10}{V}/\SI{2}{k\ohm} = \ergebnis{\SI{5}{mA}}$. Der Strom springt beim Schließen von $0$ auf $\SI{5}{mA}$ -- das ist erlaubt.\\
+Die gesamte im Kondensator gespeicherte Energie wird im Widerstand umgesetzt:
+\[
+  W = \tfrac12 C U_0^2 = \tfrac12\cdot\SI{100e-6}{F}\cdot(\SI{10}{V})^2 = \ergebnis{\SI{5}{mJ}}
+\]
+\schritt{f) Skizze}
+Vor dem Schließen konstant $U_0$, danach e-Funktion mit Startwert $U_0$. Die Tangente im Startpunkt schneidet die Zeitachse genau bei $t = \tau$.
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[tplot,ymin=0,ymax=11,ylabel={$u_C$ in V},xlabel={$t$}]
+  \addplot[domain=-0.5:0] {10};
+  \addplot[domain=0:5.2] {10*exp(-x)};
+  \addplot[dashed,thin,gray,domain=0:1] {10-10*x};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\typfehler{Das Minuszeichen in $i = -C\,\mathrm{d}u_C/\mathrm{d}t$ vergessen: Dann entsteht $RC\,\dot u_C - u_C = 0$ mit einer \emph{wachsenden} e-Funktion -- physikalisch unsinnig. Prüfen Sie immer, ob Ihre Lösung abklingt!}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Umladen eines Kondensators -- $\tau$ direkt bestimmen}{16}
+In der Schaltung ist der Schalter lange geöffnet. Zum Zeitpunkt $t_0 = 0$ wird er geschlossen.
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[V, v<=$U_0$] (0,3.5)
+        to[R, l=$R_1$] (3,3.5) -- (5.5,3.5)
+        to[C, l_=$C$, v^=$u_C$] (5.5,0) -- (0,0);
+  \draw (3,3.5) to[R, l_=$R_2$] (3,0);
+  \draw (5.5,3.5) -- (8,3.5) to[closing switch, l={$t_0 = 0$}] (8,1.9)
+        to[R, l=$R_3$, i>^=$i_3$] (8,0) -- (5.5,0);
+  \draw (3,3.5) node[circ]{} (3,0) node[circ]{} (5.5,3.5) node[circ]{} (5.5,0) node[circ]{};
+\end{circuitikz}
+\end{center}
+\gegeben{$U_0 = \SI{12}{V}$, $R_1 = R_2 = \SI{6}{k\ohm}$, $R_3 = \SI{3}{k\ohm}$, $C = \SI{10}{\micro F}$}
+\begin{teilaufgaben}
+  \item Berechnen Sie die Kondensatorspannung $u_C(0^-)$ kurz vor dem Schließen des Schalters.
+  \item Berechnen Sie den Endwert $u_C(t\to\infty)$.
+  \item Bestimmen Sie die Zeitkonstante $\tau$, \emph{ohne} die Differentialgleichung aufzustellen.
+  \item Geben Sie $u_C(t)$ für $t \ge 0$ an.
+  \item Berechnen Sie den Strom $i_3$ direkt nach dem Schließen ($t = 0^+$) und für $t \to \infty$.
+  \item Skizzieren Sie $u_C(t)$ und $i_3(t)$.
+\end{teilaufgaben}
+\begin{tipp}Für $\tau$ deaktivieren Sie alle Quellen und berechnen den Widerstand, den der Kondensator „sieht“: $\tau = R_\text{ges}\cdot C$.\end{tipp}
+\leeresdiagramm{$t$}{$u_C$, $i_3$}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Anfangswert}
+\leitfrage{Wie verhält sich $C$ im eingeschwungenen Zustand, und welcher Zweig ist bei offenem Schalter stromlos?}
+$C$ ist ein Leerlauf, der Zweig mit $R_3$ ist offen. Es bleibt der Spannungsteiler aus $R_1$ und $R_2$:
+\[
+  u_C(0^-) = U_0\,\frac{R_2}{R_1+R_2} = \SI{12}{V}\cdot\frac{6}{6+6} = \ergebnis{\SI{6}{V}}
+\]
+Wegen der Stetigkeit gilt auch $u_C(0^+) = \SI{6}{V}$.
+\schritt{b) Endwert}
+Jetzt liegt $R_3$ parallel zu $R_2$: $R_2 \,\|\, R_3 = \dfrac{6\cdot 3}{6+3}\,\si{k\ohm} = \SI{2}{k\ohm}$.
+\[
+  u_C(\infty) = U_0\,\frac{R_2\|R_3}{R_1 + R_2\|R_3} = \SI{12}{V}\cdot\frac{2}{6+2} = \ergebnis{\SI{3}{V}}
+\]
+\schritt{c) Zeitkonstante aus Sicht des Kondensators}
+Spannungsquelle deaktivieren $\Rightarrow$ Kurzschluss. Von den Klemmen des Kondensators aus liegen dann $R_1$, $R_2$ und $R_3$ alle parallel:
+\[
+  R_\text{ges} = R_1\|R_2\|R_3 = \frac{1}{\frac{1}{6}+\frac16+\frac13}\,\si{k\ohm} = \SI{1.5}{k\ohm},
+  \qquad \tau = R_\text{ges}\, C = \SI{1.5}{k\ohm}\cdot\SI{10}{\micro F} = \ergebnis{\SI{15}{ms}}
+\]
+\schritt{d) Zeitverlauf}
+Ansatz $u_C(t) = k_1 + k_2\,\mathrm{e}^{-t/\tau}$ mit $k_1 = u_C(\infty) = \SI{3}{V}$ und $k_1 + k_2 = u_C(0^+) = \SI{6}{V}$, also $k_2 = \SI{3}{V}$:
+\[
+  \ergebnis{u_C(t) = \SI{3}{V} + \SI{3}{V}\cdot\mathrm{e}^{-t/\SI{15}{ms}}}
+\]
+Allgemein gilt die praktische Form $x(t) = x(\infty) + \bigl(x(0^+) - x(\infty)\bigr)\,\mathrm{e}^{-t/\tau}$.
+\schritt{e) Strom $i_3$}
+$R_3$ liegt parallel zum Kondensator, also $i_3 = u_C/R_3$:
+\[
+  i_3(0^+) = \frac{\SI{6}{V}}{\SI{3}{k\ohm}} = \ergebnis{\SI{2}{mA}}, \qquad
+  i_3(\infty) = \frac{\SI{3}{V}}{\SI{3}{k\ohm}} = \ergebnis{\SI{1}{mA}}, \qquad
+  i_3(t) = \SI{1}{mA} + \SI{1}{mA}\cdot\mathrm{e}^{-t/\tau}
+\]
+Vor dem Schließen ist $i_3 = 0$, der Strom springt also auf $\SI{2}{mA}$, während $u_C$ stetig bleibt.\\
+\emph{Kontrolle mit dem Knotensatz bei $t=0^+$:} $i_{R1} = (12-6)\,\si{V}/\SI{6}{k\ohm} = \SI{1}{mA}$, $i_{R2} = \SI{1}{mA}$, also $i_C = 1 - 1 - 2 = \SI{-2}{mA}$. Mit der Bauelementgleichung: $i_C = C\,\dot u_C(0) = \SI{10}{\micro F}\cdot\frac{\SI{-3}{V}}{\SI{15}{ms}} = \SI{-2}{mA}$ \checkmark
+\schritt{f) Skizze}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[tplot,ymin=0,ymax=7,ylabel={$u_C$ in V \;/\; $i_3$ in mA},xlabel={$t$},
+    legend style={font=\small,draw=none,fill=none},legend pos=north east]
+  \addplot[domain=-0.5:0,forget plot] {6};
+  \addplot[domain=0:5.2] {3+3*exp(-x)};
+  \addlegendentry{$u_C$}
+  \addplot[hinweisfarbe,domain=-0.5:0,forget plot] {0};
+  \addplot[hinweisfarbe,domain=0:5.2] {1+exp(-x)};
+  \addlegendentry{$i_3$}
+  \addplot[hinweisfarbe,thin,dashed,forget plot] coordinates {(0,0) (0,2)};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\typfehler{Für $\tau$ nur $R_3\cdot C$ oder $(R_1+R_2)\cdot C$ einsetzen. Entscheidend ist der Widerstand \emph{aus Sicht des Kondensators} bei deaktivierter Quelle -- hier liegen alle drei Widerstände parallel. Ebenfalls häufig: $u_C(0^+) = 0$ annehmen, obwohl der Kondensator vorgeladen ist.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Einschaltvorgang an einer Spule}{15}
+Ein Relais wird durch eine Spule mit $L = \SI{0.6}{H}$ und dem Wicklungswiderstand $R = \SI{12}{\ohm}$ dargestellt. Es wird zum Zeitpunkt $t_0 = 0$ an $U_0 = \SI{24}{V}$ geschaltet. Vorher ist die Spule stromlos.
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[V, v<=$U_0$] (0,3)
+        to[closing switch, l={$t_0 = 0$}] (2.5,3)
+        to[short, i=$i(t)$] (3.2,3)
+        to[R, l=$R$, v=$u_R$] (5.5,3)
+        to[L, l_=$L$, v^=$u_L$] (5.5,0) -- (0,0);
+\end{circuitikz}
+\end{center}
+\begin{teilaufgaben}
+  \item Stellen Sie die Differentialgleichung für $i(t)$ auf und bringen Sie sie auf die Form $\tau\,\dfrac{\mathrm{d}i}{\mathrm{d}t} + i = \text{const}$.
+  \item Bestimmen Sie $\tau$ und lösen Sie die Differentialgleichung mit den Randbedingungen.
+  \item Berechnen Sie $u_L(t)$. Welchen Wert hat $u_L$ direkt nach dem Einschalten?
+  \item Das Relais zieht an, wenn der Strom $\SI{95}{\percent}$ seines Endwertes erreicht. Nach welcher Zeit ist das der Fall?
+  \item Welche Energie ist im eingeschwungenen Zustand im Magnetfeld gespeichert? ($W = \tfrac12 L I^2$)
+  \item Skizzieren Sie $i(t)$ und $u_L(t)$.
+\end{teilaufgaben}
+\leeresdiagramm{$t$}{$i$, $u_L$}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Differentialgleichung}
+\leitfrage{Welche drei Gleichungen beschreiben die Masche nach dem Schließen?}
+Bauelementgleichungen (beide im VZS) und Maschensatz:
+\[
+  u_R = R\cdot i, \qquad u_L = L\,\frac{\mathrm{d}i}{\mathrm{d}t}, \qquad u_R + u_L = U_0
+\]
+Einsetzen und durch $R$ teilen:
+\[
+  R\,i + L\,\frac{\mathrm{d}i}{\mathrm{d}t} = U_0
+  \quad\Rightarrow\quad \ergebnis{\frac{L}{R}\,\frac{\mathrm{d}i}{\mathrm{d}t} + i = \frac{U_0}{R}}
+\]
+\schritt{b) Zeitkonstante und Lösung}
+\[
+  \tau = \frac{L}{R} = \frac{\SI{0.6}{H}}{\SI{12}{\ohm}} = \ergebnis{\SI{50}{ms}}
+\]
+Ansatz $i(t) = k_1 + k_2\,\mathrm{e}^{-t/\tau}$:
+\begin{align*}
+  i(t\to\infty) &= k_1 = \frac{U_0}{R} = \SI{2}{A} && \text{(Spule = Kurzschluss)}\\
+  i(0^+) &= k_1 + k_2 = 0 && \text{(Spulenstrom ist stetig)}\quad\Rightarrow\ k_2 = \SI{-2}{A}
+\end{align*}
+\[
+  \ergebnis{i(t) = \SI{2}{A}\cdot\bigl(1 - \mathrm{e}^{-t/\SI{50}{ms}}\bigr)}
+\]
+\schritt{c) Spannung an der Spule}
+Entweder über die Bauelementgleichung oder über den Maschensatz ($u_L = U_0 - R\,i$):
+\[
+  u_L(t) = L\,\frac{\mathrm{d}i}{\mathrm{d}t} = \SI{0.6}{H}\cdot\SI{2}{A}\cdot\frac{1}{\SI{50}{ms}}\,\mathrm{e}^{-t/\tau}
+  = \ergebnis{\SI{24}{V}\cdot\mathrm{e}^{-t/\SI{50}{ms}}}
+\]
+Direkt nach dem Einschalten ist $i = 0$, also $u_R = 0$: Die gesamte Quellenspannung liegt an der Spule, $u_L(0^+) = \SI{24}{V}$. Die Spulenspannung springt -- das ist erlaubt.
+\schritt{d) Anzugszeit}
+\leitfrage{Für welches $t_1$ gilt $1 - \mathrm{e}^{-t_1/\tau} = 0{,}95$?}
+\[
+  \mathrm{e}^{-t_1/\tau} = 0{,}05 \quad\Rightarrow\quad t_1 = \tau\ln 20 = \SI{50}{ms}\cdot 2{,}996 \approx \ergebnis{\SI{150}{ms}} \approx 3\tau
+\]
+\schritt{e) Gespeicherte Energie}
+\[
+  W = \tfrac12 L I^2 = \tfrac12\cdot\SI{0.6}{H}\cdot(\SI{2}{A})^2 = \ergebnis{\SI{1.2}{J}}
+\]
+\schritt{f) Skizze}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[tplot,height=4cm,ymin=0,ymax=2.4,ylabel={$i$ in A},xlabel={$t$},ytick={0,1,2}]
+  \addplot[domain=-0.5:0] {0};
+  \addplot[domain=0:5.2] {2*(1-exp(-x))};
+  \addplot[dashed,thin,gray,domain=0:1] {2*x};
+\end{axis}
+\end{tikzpicture}
+
+\begin{tikzpicture}
+\begin{axis}[tplot,height=4cm,ymin=0,ymax=27,ylabel={$u_L$ in V},xlabel={$t$},ytick={0,12,24}]
+  \addplot[hinweisfarbe,domain=-0.5:0] {0};
+  \addplot[hinweisfarbe,domain=0:5.2] {24*exp(-x)};
+  \addplot[hinweisfarbe,thin,dashed] coordinates {(0,0) (0,24)};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+Der Strom steigt stetig von $0$ auf $\SI{2}{A}$; die Spannung springt auf $\SI{24}{V}$ und klingt ab. Die gestrichelte Anfangstangente von $i(t)$ erreicht den Endwert genau bei $t = \tau$.
+\typfehler{Beim RL-Kreis $\tau = R\cdot L$ statt $\tau = L/R$ verwenden. Einheitenkontrolle: $\si{H}/\si{\ohm} = \si{Vs/A}\cdot\si{A/V} = \si{s}$ \checkmark. Außerdem: Annehmen, der Strom springe beim Einschalten sofort auf $U_0/R$ -- das tut er nur im ohmschen Kreis ohne Spule.}
+\end{loesung}
+
+\end{document}

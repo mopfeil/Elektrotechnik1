@@ -1,0 +1,218 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{get-uebung}
+
+\blatt{6}{Messung von Strom, Spannung und Widerständen}{Kap.~2.5--2.6}
+
+\begin{document}
+
+\blattkopf{
+  \item reale Spannungs- und Strommesser durch ein ideales Messgerät mit Innenwiderstand ($R_V$ bzw.\ $R_A$) modellieren,
+  \item die Rückwirkung eines Messgeräts auf die Schaltung und den daraus folgenden Messfehler berechnen,
+  \item Vor- und Nebenwiderstände zur Messbereichserweiterung dimensionieren,
+  \item strom- und spannungsrichtige Messschaltung auswerten und je nach Größe von $R_x$ die passende Schaltung wählen.
+}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Rückwirkung eines Spannungsmessers}{12}
+Ein Spannungsteiler aus $R_1 = R_2 = \SI{100}{k\ohm}$ liegt an $U_0 = \SI{10}{V}$. Die Spannung $U_2$ soll gemessen werden.
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[V, v<=$U_0$] (0,4) -- (2.5,4)
+        to[R, l=$R_1$] (2.5,2)
+        to[R, l_=$R_2$, v^=$U_2$] (2.5,0) -- (0,0);
+  \draw (2.5,2) to[short,*-] (5,2) to[rmeter, t=V, l=$R_V$] (5,0) to[short,-*] (2.5,0);
+\end{circuitikz}
+\end{center}
+\begin{teilaufgaben}
+  \item Welche Spannung $U_2$ liegt \emph{ohne} Messgerät an $R_2$?
+  \item Zeichnen Sie das Ersatzschaltbild eines realen Spannungsmessers.
+  \item Welche Spannung zeigt ein Digitalmultimeter mit $R_V = \SI{1}{M\ohm}$ an? Wie groß ist der relative Messfehler?
+  \item Wiederholen Sie c) für ein älteres Zeigerinstrument mit $R_V = \SI{100}{k\ohm}$. Was folgern Sie für die Wahl von $R_V$?
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Unbelasteter Spannungsteiler}
+Ohne Messgerät fließt durch $R_1$ und $R_2$ derselbe Strom, die Spannungsteilerregel gilt:
+\[
+  U_2 = U_0\,\frac{R_2}{R_1+R_2} = \SI{10}{V}\cdot\frac{\SI{100}{k\ohm}}{\SI{200}{k\ohm}} = \ergebnis{\SI{5}{V}}
+\]
+\schritt{b) Ersatzschaltbild}
+Ein realer Spannungsmesser ist ein \emph{idealer} Spannungsmesser (Leerlauf, $I=0$) mit parallel geschaltetem Innenwiderstand $R_V$ (Skript Kap.~2.5.1).
+\schritt{c) Digitalmultimeter}
+\leitfrage{Durch das Messgerät fließt jetzt Strom. Fließt durch $R_1$ und $R_2$ noch derselbe Strom?}
+Nein -- $R_V$ liegt parallel zu $R_2$. Der untere Teil des Teilers ist also
+\[
+  R_{2V} = R_2 \parallel R_V = \frac{\SI{100}{k\ohm}\cdot\SI{1}{M\ohm}}{\SI{1.1}{M\ohm}} \approx \SI{90.91}{k\ohm}
+\]
+und erst damit gilt wieder die Spannungsteilerregel:
+\[
+  U_{2,\text{m}} = U_0\,\frac{R_{2V}}{R_1+R_{2V}} = \SI{10}{V}\cdot\frac{\SI{90.91}{k\ohm}}{\SI{190.91}{k\ohm}} \approx \ergebnis{\SI{4.76}{V}}
+\]
+Relativer Fehler: $F = \dfrac{U_{2,\text{m}}-U_2}{U_2} = \dfrac{\SI{4.762}{V}-\SI{5}{V}}{\SI{5}{V}} \approx \ergebnis{\SI{-4.8}{\percent}}$
+\schritt{d) Zeigerinstrument}
+Jetzt ist $R_2\parallel R_V = \SI{50}{k\ohm}$ und
+\[
+  U_{2,\text{m}} = \SI{10}{V}\cdot\frac{\SI{50}{k\ohm}}{\SI{150}{k\ohm}} \approx \ergebnis{\SI{3.33}{V}}, \qquad F \approx \ergebnis{\SI{-33}{\percent}}
+\]
+Folgerung: Der Innenwiderstand des Spannungsmessers muss \emph{groß gegenüber} dem Widerstand der Schaltung sein, an der gemessen wird ($R_V \gg R_2$, genauer: $R_V \gg R_1\parallel R_2$). Bei hochohmigen Schaltungen ist selbst ein Digitalmultimeter nicht mehr rückwirkungsfrei.
+\typfehler{Den Messfehler über $U_0 \cdot R_V/(R_1+R_V)$ o.\,ä.\ berechnen: Der Spannungsteiler darf erst angewendet werden, nachdem $R_2$ und $R_V$ zu \emph{einem} Widerstand zusammengefasst wurden.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Messbereichserweiterung}{15}
+Ein Drehspulmesswerk hat den Innenwiderstand $R_M = \SI{100}{\ohm}$ und erreicht Vollausschlag bei $I_M = \SI{1}{mA}$.
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) node[left]{(I)} to[short,o-] (0.3,0) to[R, l=$R_\text{Vor}$] (2.5,0) to[rmeter, t=M, l=$R_M$] (4.5,0) to[short,-o] (5,0);
+  \begin{scope}[xshift=7cm]
+    \draw (0,0) node[left]{(II)} to[short,o-*] (0.8,0) -- (0.8,0.8) to[rmeter, t=M, l=$R_M$] (3.2,0.8) -- (3.2,0);
+    \draw (0.8,0) -- (0.8,-0.8) to[R, l_=$R_N$] (3.2,-0.8) -- (3.2,0) to[short,*-o] (4,0);
+  \end{scope}
+\end{circuitikz}
+\end{center}
+\begin{teilaufgaben}
+  \item Bei welcher Spannung $U_M$ zwischen seinen Klemmen schlägt das Messwerk voll aus?
+  \item Das Messwerk soll als Spannungsmesser mit dem Messbereich $U_\text{max} = \SI{10}{V}$ eingesetzt werden. Welche der beiden Schaltungen (I) oder (II) ist dafür geeignet? Berechnen Sie den nötigen Widerstand.
+  \item Welchen Innenwiderstand hat der entstandene Spannungsmesser? Hersteller geben oft den Kennwert „$\si{\ohm}$ pro Volt Messbereich“ an -- wie groß ist er hier?
+  \item Nun soll mit demselben Messwerk ein Strommesser für $I_\text{max} = \SI{1}{A}$ gebaut werden. Wählen Sie die passende Schaltung und berechnen Sie den Widerstand.
+  \item Wie groß ist der Innenwiderstand des Strommessers aus d)? Vergleichen Sie mit dem Ergebnis aus c).
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Spannung bei Vollausschlag}
+\[
+  U_M = R_M\cdot I_M = \SI{100}{\ohm}\cdot\SI{1}{mA} = \ergebnis{\SI{0.1}{V}}
+\]
+\schritt{b) Vorwiderstand für den Spannungsmesser}
+\leitfrage{Bei $\SI{10}{V}$ an den Klemmen dürfen nur $\SI{0.1}{V}$ am Messwerk liegen. Wo müssen die übrigen $\SI{9.9}{V}$ abfallen?}
+An einem Widerstand \emph{in Reihe} zum Messwerk -- Schaltung (I) mit Vorwiderstand. Bei Vollausschlag fließt $I_M = \SI{1}{mA}$ durch beide Widerstände:
+\[
+  R_\text{Vor}+R_M = \frac{U_\text{max}}{I_M} = \frac{\SI{10}{V}}{\SI{1}{mA}} = \SI{10}{k\ohm}
+  \quad\Rightarrow\quad R_\text{Vor} = \SI{10}{k\ohm}-\SI{100}{\ohm} = \ergebnis{\SI{9.9}{k\ohm}}
+\]
+\schritt{c) Innenwiderstand des Spannungsmessers}
+$R_V = R_\text{Vor}+R_M = \ergebnis{\SI{10}{k\ohm}}$. Kennwert: $\SI{10}{k\ohm}/\SI{10}{V} = \ergebnis{\SI{1}{k\ohm/V}}$ -- das ist gerade $1/I_M$. Für jeden Messbereich gilt also $R_V = U_\text{max}/I_M$.
+\schritt{d) Nebenwiderstand für den Strommesser}
+\leitfrage{Durch das Messwerk dürfen nur $\SI{1}{mA}$ fließen. Wo muss der Rest des Stroms fließen?}
+Durch einen Widerstand \emph{parallel} zum Messwerk -- Schaltung (II) mit Nebenwiderstand (Shunt). Nach dem Knotensatz fließt durch $R_N$:
+\[
+  I_N = I_\text{max}-I_M = \SI{1}{A}-\SI{1}{mA} = \SI{999}{mA}
+\]
+An $R_N$ liegt dieselbe Spannung wie am Messwerk, $U_M = \SI{0.1}{V}$:
+\[
+  R_N = \frac{U_M}{I_N} = \frac{\SI{0.1}{V}}{\SI{0.999}{A}} \approx \ergebnis{\SI{0.1001}{\ohm}}
+\]
+\schritt{e) Innenwiderstand des Strommessers}
+\[
+  R_A = R_M\parallel R_N = \frac{U_M}{I_\text{max}} = \frac{\SI{0.1}{V}}{\SI{1}{A}} = \ergebnis{\SI{0.1}{\ohm}}
+\]
+Vergleich: Der Spannungsmesser ist hochohmig ($\si{k\ohm}$), der Strommesser niederohmig ($\si{\ohm}$ bis $\si{m\ohm}$) -- genau wie es das Skript für reale Messgeräte angibt. Beide nähern sich so dem jeweiligen Ideal (Leerlauf bzw.\ Kurzschluss).
+\typfehler{Vor- und Nebenwiderstand vertauschen. Merkhilfe: Der Spannungsmesser braucht einen Widerstand, an dem \emph{Spannung} abfällt (Reihe), der Strommesser einen Weg, über den \emph{Strom} vorbeifließt (parallel). Außerdem: $R_N = \SI{0.1}{V}/\SI{1}{A}$ ist knapp daneben -- durch $R_N$ fließt nicht der ganze Strom.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Strom- und spannungsrichtige Messschaltung}{23}
+Ein Widerstand $R_x$ wird mit Strom- und Spannungsmesser bestimmt. Die Messgeräte haben die Innenwiderstände $R_A = \SI{2}{\ohm}$ und $R_V = \SI{1}{M\ohm}$.
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[V, v<=$U_0$] (0,3) -- (1.8,3) to[rmeter, t=A, i=$I_m$] (4,3) to[R, l=$R_x$] (4,0) -- (0,0);
+  \draw (1.8,3) to[rmeter, t=V, v^=$U_m$, *-*] (1.8,0);
+  \node at (2,-0.6) {(a)};
+  \begin{scope}[xshift=7cm]
+    \draw (0,0) to[V, v<=$U_0$] (0,3) to[rmeter, t=A, i=$I_m$] (2.4,3) -- (4.2,3) to[R, l=$R_x$] (4.2,0) -- (0,0);
+    \draw (2.4,3) to[rmeter, t=V, v^=$U_m$, *-*] (2.4,0);
+    \node at (2,-0.6) {(b)};
+  \end{scope}
+\end{circuitikz}
+\end{center}
+\begin{teilaufgaben}
+  \item Welche der Schaltungen (a) und (b) ist die stromrichtige, welche die spannungsrichtige Messschaltung? Begründen Sie.
+  \item In Schaltung (a) wird $U_m = \SI{10.00}{V}$ und $I_m = \SI{0.9998}{mA}$ abgelesen. Berechnen Sie den „naiven“ Wert $U_m/I_m$ und den korrigierten Wert von $R_x$.
+  \item Derselbe Widerstand wird in Schaltung (b) gemessen: $U_m = \SI{9.998}{V}$, $I_m = \SI{1.0098}{mA}$. Berechnen Sie wieder $U_m/I_m$ und den korrigierten Wert.
+  \item Leiten Sie für beide Schaltungen den relativen Fehler $F = (U_m/I_m - R_x)/R_x$ der naiven Auswertung allgemein her (Ergebnis in $R_x$, $R_A$, $R_V$).
+  \item Berechnen Sie $F$ für beide Schaltungen jeweils für $R_x = \SI{10}{k\ohm}$ und $R_x = \SI{1}{\ohm}$ und tragen Sie die Werte in eine Tabelle ein.
+  \item Für welchen Wert $R_{x,\text{g}}$ sind beide Schaltungen etwa gleich gut? Nehmen Sie dazu $R_x \ll R_V$ an.
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Schaltungen zuordnen}
+\leitfrage{Welches Messgerät misst in welcher Schaltung \emph{genau} die Größe an $R_x$?}
+In (a) liegt der Strommesser direkt in Reihe zu $R_x$: $I_m = I_x$, er misst den richtigen Strom $\Rightarrow$ \ergebnis{\text{(a) stromrichtig}}. Der Spannungsmesser misst aber $U_x$ \emph{plus} den Spannungsabfall am Strommesser.\\
+In (b) liegt der Spannungsmesser direkt parallel zu $R_x$: $U_m = U_x$ $\Rightarrow$ \ergebnis{\text{(b) spannungsrichtig}}. Der Strommesser misst aber $I_x$ \emph{plus} den Strom durch den Spannungsmesser.
+\schritt{b) Auswertung der stromrichtigen Schaltung}
+Naiv: $U_m/I_m = \SI{10.00}{V}/\SI{0.9998}{mA} \approx \SI{10002}{\ohm}$.\\
+Korrektur (Maschensatz): $U_x = U_m - I_m R_A$, also
+\[
+  R_x = \frac{U_m - I_m R_A}{I_m} = \frac{U_m}{I_m} - R_A = \SI{10002}{\ohm}-\SI{2}{\ohm} = \ergebnis{\SI{10.000}{k\ohm}}
+\]
+\schritt{c) Auswertung der spannungsrichtigen Schaltung}
+Naiv: $U_m/I_m = \SI{9.998}{V}/\SI{1.0098}{mA} \approx \SI{9901}{\ohm}$.\\
+Korrektur (Knotensatz): $I_x = I_m - U_m/R_V = \SI{1.0098}{mA} - \SI{9.998}{\micro A} \approx \SI{0.9998}{mA}$, also
+\[
+  R_x = \frac{U_m}{I_m - U_m/R_V} = \frac{\SI{9.998}{V}}{\SI{0.9998}{mA}} \approx \ergebnis{\SI{10.000}{k\ohm}}
+\]
+Beide Schaltungen liefern \emph{nach Korrektur} denselben Wert. Ohne Korrektur ist (a) hier deutlich besser ($\SI{0.02}{\percent}$ statt $\SI{1}{\percent}$ Fehler).
+\schritt{d) Allgemeine Fehlerformeln}
+Stromrichtig: $U_m/I_m = R_x + R_A$, also
+\[
+  F_\text{SR} = \frac{(R_x+R_A)-R_x}{R_x} = \ergebnis{\frac{R_A}{R_x}}
+\]
+Spannungsrichtig: Der Strommesser sieht $R_x\parallel R_V$, also $U_m/I_m = R_x R_V/(R_x+R_V)$ und
+\[
+  F_\text{UR} = \frac{R_V}{R_x+R_V}-1 = \ergebnis{-\frac{R_x}{R_x+R_V}} \approx -\frac{R_x}{R_V}\quad(R_x\ll R_V)
+\]
+\schritt{e) Tabelle}
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+ & $R_x = \SI{10}{k\ohm}$ & $R_x = \SI{1}{\ohm}$\\\midrule
+stromrichtig $F_\text{SR} = R_A/R_x$ & $+\SI{0.02}{\percent}$ & $+\SI{200}{\percent}$\\
+spannungsrichtig $F_\text{UR}$ & $-\SI{0.99}{\percent}$ & $-\SI{0.0001}{\percent}$\\\bottomrule
+\end{tabular}
+\end{center}
+Große Widerstände: stromrichtig messen. Kleine Widerstände: spannungsrichtig messen (Skript Kap.~2.6).
+\schritt{f) Grenzwiderstand}
+\leitfrage{Wann sind die Beträge der beiden Fehler gleich groß?}
+\[
+  \frac{R_A}{R_{x,\text{g}}} = \frac{R_{x,\text{g}}}{R_V}
+  \quad\Rightarrow\quad R_{x,\text{g}} = \sqrt{R_A R_V} = \sqrt{\SI{2}{\ohm}\cdot\SI{1}{M\ohm}} \approx \ergebnis{\SI{1.41}{k\ohm}}
+\]
+Für $R_x > R_{x,\text{g}}$ ist die stromrichtige, für $R_x < R_{x,\text{g}}$ die spannungsrichtige Schaltung günstiger.
+\typfehler{Die Namen verwechseln: „stromrichtig“ heißt, der \emph{Strom}messer misst richtig -- es ist die Schaltung, in der der \emph{Spannungs}messer falsch misst. Bei der Korrektur in c) darf nicht $U_m/R_V$ von $U_m/I_m$ abgezogen werden; korrigiert wird der Strom.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Rückwirkung eines Strommessers}{10}
+Eine Batterie ($U_0 = \SI{1.5}{V}$, als ideal angenommen) speist einen Widerstand $R = \SI{5}{\ohm}$. Der Strom wird mit einem Strommesser gemessen, dessen Innenwiderstand $R_A = \SI{0.5}{\ohm}$ beträgt.
+\begin{teilaufgaben}
+  \item Zeichnen Sie die Schaltung mit dem Ersatzschaltbild des realen Strommessers.
+  \item Welcher Strom fließt ohne Messgerät, welcher wird angezeigt? Wie groß ist der relative Messfehler?
+  \item Wie groß darf $R_A$ höchstens sein, damit der Messfehler betragsmäßig unter $\SI{1}{\percent}$ bleibt?
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Schaltung}
+Ein Stromkreis aus $U_0$, $R$ und dem Strommesser in Reihe. Der reale Strommesser ist ein idealer Strommesser (Kurzschluss) mit $R_A$ \emph{in Reihe} (Skript Kap.~2.5.2).
+\schritt{b) Strom ohne und mit Messgerät}
+\[
+  I = \frac{U_0}{R} = \frac{\SI{1.5}{V}}{\SI{5}{\ohm}} = \ergebnis{\SI{0.3}{A}},\qquad
+  I_m = \frac{U_0}{R+R_A} = \frac{\SI{1.5}{V}}{\SI{5.5}{\ohm}} \approx \ergebnis{\SI{0.273}{A}}
+\]
+\[
+  F = \frac{I_m - I}{I} = \frac{R}{R+R_A}-1 = -\frac{R_A}{R+R_A} = -\frac{0{,}5}{5{,}5} \approx \ergebnis{\SI{-9.1}{\percent}}
+\]
+\schritt{c) Maximaler Innenwiderstand}
+\leitfrage{Welche Ungleichung folgt aus $|F| \le 0{,}01$?}
+\[
+  \frac{R_A}{R+R_A} \le 0{,}01 \;\Leftrightarrow\; R_A \le 0{,}01\,(R+R_A) \;\Leftrightarrow\; 0{,}99\,R_A \le 0{,}01\,R
+  \;\Rightarrow\; R_A \le \frac{R}{99} \approx \ergebnis{\SI{50.5}{m\ohm}}
+\]
+Der Strommesser muss also klein gegenüber dem Widerstand des Stromkreises sein.
+\typfehler{Annehmen, dass der angezeigte Strom „der richtige“ ist, weil das Messgerät ihn ja misst: Das Messgerät misst den Strom korrekt -- aber in einer Schaltung, die es selbst verändert hat.}
+\end{loesung}
+
+\end{document}

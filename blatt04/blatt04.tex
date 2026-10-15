@@ -1,0 +1,207 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{get-uebung}
+
+\blatt{4}{Widerstandsnetzwerke}{Kap.~2.2}
+
+\begin{document}
+
+\blattkopf{
+  \item Reihen- und Parallelschaltungen in einem Netzwerk erkennen und schrittweise zusammenfassen,
+  \item die Formel $R_1\parallel R_2 = \frac{R_1 R_2}{R_1+R_2}$ und Abschätzungen für Parallelschaltungen sicher anwenden,
+  \item den Gesamtwiderstand eines Netzwerks zwischen \emph{verschiedenen} Klemmenpaaren bestimmen,
+  \item unübersichtlich gezeichnete Schaltungen durch Umzeichnen vereinfachen,
+  \item Dreieck- in Sternschaltungen umwandeln (und umgekehrt), um Brückenschaltungen zu berechnen.
+}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Reihe und parallel -- Aufwärmen}{12}
+\gegeben{$R_1 = \SI{50}{\ohm}$, $R_2 = \SI{60}{\ohm}$, $R_3 = \SI{10}{\ohm}$, $R_4 = \SI{20}{\ohm}$}
+\begin{center}
+\begin{circuitikz}
+  \draw (0,3) node[left]{$A$} to[short, o-] (0.5,3)
+        to[R, l=$R_1$] (3,3) -- (5.5,3)
+        to[R, l=$R_3$] (5.5,1.5)
+        to[R, l=$R_4$] (5.5,0) -- (0.5,0) to[short, -o] (0,0) node[left]{$B$};
+  \draw (3,3) to[R, l=$R_2$, *-*] (3,0);
+\end{circuitikz}
+\end{center}
+\begin{teilaufgaben}
+  \item Welche Widerstände sind in Reihe, welche parallel geschaltet? Berechnen Sie den Gesamtwiderstand $R_{AB}$.
+  \item Ohne Taschenrechner: Wie groß ist ungefähr $\SI{1}{k\ohm}\parallel\SI{1}{\ohm}$? Begründen Sie Ihre Abschätzung.
+  \item Welchen Widerstand $R_x$ muss man zu $R_2 = \SI{60}{\ohm}$ parallel schalten, damit die Parallelschaltung $\SI{40}{\ohm}$ hat?
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Struktur erkennen -- von der Klemme weg nach innen arbeiten}
+\leitfrage{Durch welche Widerstände fließt garantiert \emph{derselbe} Strom (Reihe), an welchen liegt \emph{dieselbe} Spannung (parallel)?}
+$R_3$ und $R_4$ liegen im selben Zweig ohne Abzweigung dazwischen $\Rightarrow$ Reihe:
+\[ R_{34} = R_3 + R_4 = \SI{10}{\ohm} + \SI{20}{\ohm} = \SI{30}{\ohm} \]
+$R_{34}$ und $R_2$ verbinden beide denselben oberen Knoten mit derselben unteren Leitung $\Rightarrow$ parallel:
+\[ R_2\parallel R_{34} = \frac{\SI{60}{\ohm}\cdot\SI{30}{\ohm}}{\SI{60}{\ohm}+\SI{30}{\ohm}} = \SI{20}{\ohm} \]
+$R_1$ liegt in Reihe dazu:
+\[ R_{AB} = R_1 + R_2\parallel(R_3+R_4) = \SI{50}{\ohm} + \SI{20}{\ohm} = \ergebnis{\SI{70}{\ohm}} \]
+\schritt{b) Abschätzung}
+Der Gesamtwiderstand einer Parallelschaltung ist immer \emph{kleiner} als der kleinste Einzelwiderstand. Ist ein Widerstand viel kleiner als der andere, fließt fast der ganze Strom durch ihn:
+\[ \SI{1}{k\ohm}\parallel\SI{1}{\ohm} = \frac{1000\cdot 1}{1001}\,\si{\ohm} \approx \ergebnis{\SI{0.999}{\ohm}\approx\SI{1}{\ohm}} \]
+\schritt{c) Parallelwiderstand gesucht}
+\leitfrage{Bei Parallelschaltung addieren sich die Kehrwerte (Leitwerte). Wie lässt sich die Gleichung nach $1/R_x$ umstellen?}
+\[ \frac{1}{\SI{40}{\ohm}} = \frac{1}{\SI{60}{\ohm}} + \frac{1}{R_x}
+   \quad\Rightarrow\quad \frac{1}{R_x} = \frac{1}{40\,\Omega} - \frac{1}{60\,\Omega} = \frac{3-2}{120\,\Omega}
+   \quad\Rightarrow\quad R_x = \ergebnis{\SI{120}{\ohm}} \]
+Kontrolle: $\frac{60\cdot120}{60+120}\,\si{\ohm} = \SI{40}{\ohm}$ \checkmark
+\typfehler{Bei Parallelschaltungen die Kehrwerte addieren und am Ende vergessen, wieder den Kehrwert zu bilden. Die Produkt-durch-Summe-Formel gilt nur für \emph{zwei} Widerstände -- bei dreien muss man sie zweimal hintereinander anwenden.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Ein Netzwerk -- verschiedene Klemmenpaare}{15}
+\gegeben{$R_1 = \SI{10}{\ohm}$, $R_2 = \SI{60}{\ohm}$, $R_3 = \SI{30}{\ohm}$, $R_4 = \SI{30}{\ohm}$}
+\begin{center}
+\begin{circuitikz}
+  \draw (0,3) node[left]{$A$} to[short, o-] (0.5,3)
+        to[R, l=$R_1$] (3,3) node[circ]{} node[above]{$C$}
+        to[R, l=$R_3$] (6,3) node[circ]{} node[above]{$D$}
+        to[R, l=$R_4$] (6,0) -- (0.5,0) to[short, -o] (0,0) node[left]{$B$};
+  \draw (3,3) to[R, l=$R_2$, -*] (3,0);
+\end{circuitikz}
+\end{center}
+Berechnen Sie den Widerstand, den ein Ohmmeter zwischen den folgenden Klemmen misst (die jeweils übrigen Klemmen bleiben offen):
+\begin{teilaufgaben}
+  \item $R_{AB}$
+  \item $R_{CB}$
+  \item $R_{AD}$
+  \item $R_{DB}$
+\end{teilaufgaben}
+\begin{tipp}Färben Sie die beiden Messklemmen ein und zeichnen Sie die Schaltung so um, dass eine Klemme oben und eine unten liegt. Ein Widerstand, der nur an \emph{einem} Ende angeschlossen ist, führt keinen Strom.\end{tipp}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{Grundgedanke}
+Der Gesamtwiderstand ist keine Eigenschaft der Schaltung allein, sondern hängt davon ab, \emph{zwischen welchen Klemmen} gemessen wird. Ob zwei Widerstände parallel oder in Reihe liegen, muss deshalb für jedes Klemmenpaar neu entschieden werden.
+\schritt{a) $R_{AB}$}
+Vom Knoten $C$ gibt es zwei Wege nach $B$: direkt über $R_2$ oder über $R_3$ und $R_4$ (in Reihe). Diese beiden Wege sind parallel, $R_1$ liegt davor:
+\[ R_{AB} = R_1 + R_2\parallel(R_3+R_4) = \SI{10}{\ohm} + \SI{60}{\ohm}\parallel\SI{60}{\ohm} = \SI{10}{\ohm}+\SI{30}{\ohm} = \ergebnis{\SI{40}{\ohm}} \]
+\schritt{b) $R_{CB}$}
+\leitfrage{Welche Rolle spielt $R_1$, wenn die Klemme $A$ offen ist?}
+$R_1$ hängt nur noch an einem Ende (Knoten $C$); durch ihn fließt kein Strom, er fällt weg:
+\[ R_{CB} = R_2\parallel(R_3+R_4) = \ergebnis{\SI{30}{\ohm}} \]
+\schritt{c) $R_{AD}$}
+Jetzt liegt die Messklemme bei $D$. Von $C$ nach $D$ gibt es wieder zwei Wege: direkt über $R_3$ oder „unten herum“ über $R_2$, die untere Leitung und $R_4$:
+\[ R_{AD} = R_1 + R_3\parallel(R_2+R_4) = \SI{10}{\ohm} + \frac{30\cdot 90}{30+90}\,\si{\ohm} = \SI{10}{\ohm}+\SI{22.5}{\ohm} = \ergebnis{\SI{32.5}{\ohm}} \]
+Beachten Sie: In a) lagen $R_3$ und $R_4$ in Reihe, jetzt liegen $R_2$ und $R_4$ in Reihe!
+\schritt{d) $R_{DB}$}
+$R_1$ hängt wieder offen. Zwischen $D$ und $B$ liegen $R_4$ direkt und der Weg $R_3$--$R_2$:
+\[ R_{DB} = R_4\parallel(R_3+R_2) = \frac{30\cdot 90}{120}\,\si{\ohm} = \ergebnis{\SI{22.5}{\ohm}} \]
+\typfehler{Das Ergebnis von a) für alle Klemmenpaare übernehmen. Offene Widerstände wie $R_1$ in b) und d) mitrechnen. Hilfreich: Ein Strompfad muss von einer Messklemme \emph{durch} den Widerstand zur anderen Messklemme führen, sonst trägt er nichts bei.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Umzeichnen hilft}{10}
+Alle drei Widerstände haben den Wert $R = \SI{30}{\ohm}$. Leitungen, die sich ohne Punkt kreuzen, sind \emph{nicht} miteinander verbunden.
+\begin{center}
+\begin{circuitikz}
+  \draw (-1,2) node[left]{$A$} to[short, o-*] (0,2)
+        to[R, l=$R$] (2,2) node[circ]{} node[above left]{$P$}
+        to[R, l=$R$] (4,2) node[circ]{} node[above left]{$Q$}
+        to[R, l=$R$] (6,2) -- (7,2) node[circ]{} to[short, -o] (8,2) node[right]{$B$};
+  \draw (0,2) -- (0,0) -- (4,0) -- (4,2);
+  \draw (2,2) -- (2,1) -- (7,1) -- (7,2);
+\end{circuitikz}
+\end{center}
+\begin{teilaufgaben}
+  \item Markieren Sie alle Punkte, die auf demselben Potential liegen, mit derselben Farbe. Wie viele verschiedene Knoten gibt es wirklich?
+  \item Zeichnen Sie die Schaltung übersichtlich neu und berechnen Sie $R_{AB}$.
+  \item Zusätzlich wird ein Widerstand $R_5 = \SI{47}{\ohm}$ zwischen die Punkte $A$ und $Q$ geschaltet. Wie ändert sich $R_{AB}$?
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Knoten identifizieren}
+\leitfrage{Welche Punkte sind nur durch Leitungen (ohne Bauelement) verbunden?}
+Eine ideale Leitung hat keinen Spannungsabfall. Die untere Leitung verbindet $A$ mit $Q$, die mittlere Leitung verbindet $P$ mit $B$. Es gibt also nur \ergebnis{\text{zwei Knoten}}:
+\[ \text{Knoten 1: } \{A,\,Q\} \qquad\qquad \text{Knoten 2: } \{P,\,B\} \]
+\schritt{b) Neu zeichnen}
+Nun ordnen wir jeden Widerstand den Knoten an seinen Enden zu:
+\begin{itemize}[nosep]
+  \item linker Widerstand: $A$--$P$ $\hat{=}$ Knoten 1 -- Knoten 2,
+  \item mittlerer Widerstand: $P$--$Q$ $\hat{=}$ Knoten 2 -- Knoten 1,
+  \item rechter Widerstand: $Q$--$B$ $\hat{=}$ Knoten 1 -- Knoten 2.
+\end{itemize}
+Alle drei Widerstände liegen zwischen denselben beiden Knoten, also parallel:
+\begin{center}
+\begin{circuitikz}
+  \draw (0,2) node[left]{$A$} to[short,o-*] (1,2) -- (5,2);
+  \draw (0,0) node[left]{$B$} to[short,o-*] (1,0) -- (5,0);
+  \draw (1,2) to[R, l=$R$] (1,0);
+  \draw (3,2) to[R, l=$R$, *-*] (3,0);
+  \draw (5,2) to[R, l=$R$] (5,0);
+\end{circuitikz}
+\end{center}
+\[ R_{AB} = \frac{R}{3} = \frac{\SI{30}{\ohm}}{3} = \ergebnis{\SI{10}{\ohm}} \]
+\schritt{c) Zusätzlicher Widerstand}
+$A$ und $Q$ sind derselbe Knoten. $R_5$ ist also an beiden Enden mit demselben Knoten verbunden -- er ist kurzgeschlossen, an ihm liegt die Spannung $0$, und es fließt kein Strom durch ihn. $R_{AB}$ bleibt \ergebnis{\SI{10}{\ohm}}.
+\typfehler{Die Widerstände als Reihenschaltung lesen, weil sie „hintereinander“ gezeichnet sind ($3R = \SI{90}{\ohm}$). Ob Bauteile in Reihe oder parallel liegen, entscheidet allein die Verbindung der Knoten -- nicht die Lage auf dem Papier.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Brückenschaltung mit Stern-Dreieck-Umwandlung}{20}
+\gegeben{$R_1 = \SI{30}{\ohm}$, $R_2 = \SI{60}{\ohm}$, $R_3 = \SI{90}{\ohm}$, $R_4 = \SI{45}{\ohm}$, $R_5 = \SI{30}{\ohm}$}
+\begin{center}
+\begin{circuitikz}
+  \draw (-1,2) node[left]{$A$} to[short, o-*] (0,2);
+  \draw (0,2) -- (0,4) to[R, l=$R_1$] (3,4) node[circ]{} node[above]{$C$} to[R, l=$R_4$] (6,4) -- (6,2);
+  \draw (0,2) -- (0,0) to[R, l_=$R_2$] (3,0) node[circ]{} node[below]{$D$} to[R, l_=$R_5$] (6,0) -- (6,2);
+  \draw (3,4) to[R, l=$R_3$] (3,0);
+  \draw (6,2) to[short, *-o] (7,2) node[right]{$B$};
+\end{circuitikz}
+\end{center}
+\begin{teilaufgaben}
+  \item Begründen Sie, warum man $R_{AB}$ hier nicht allein mit Reihen- und Parallelschaltungen berechnen kann.
+  \item Die Widerstände $R_1$, $R_2$, $R_3$ bilden ein Dreieck zwischen den Knoten $A$, $C$ und $D$. Wandeln Sie dieses Dreieck in einen äquivalenten Stern um ($R_A$, $R_C$, $R_D$) und zeichnen Sie die neue Schaltung.
+  \item Berechnen Sie $R_{AB}$.
+  \item Umgekehrte Richtung: Ein Stern hat die Widerstände $R_{Y1} = \SI{10}{\ohm}$, $R_{Y2} = \SI{20}{\ohm}$, $R_{Y3} = \SI{20}{\ohm}$. Berechnen Sie das äquivalente Dreieck $R_{12}$, $R_{23}$, $R_{31}$ und machen Sie die Probe, indem Sie aus dem Ergebnis $R_{Y1}$ zurückrechnen.
+  \item Welchen Wert hat jeder Sternwiderstand, wenn ein symmetrisches Dreieck aus drei Widerständen $R_\Delta = \SI{30}{\ohm}$ umgewandelt wird?
+\end{teilaufgaben}
+\begin{tipp}Merkregel Dreieck $\to$ Stern: Sternwiderstand an Knoten $k$ $=$ Produkt der beiden Dreieckswiderstände, die an $k$ anliegen, geteilt durch die Summe aller drei.\end{tipp}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Warum geht es nicht direkt?}
+\leitfrage{Gibt es zwei Widerstände, durch die sicher derselbe Strom fließt, oder zwei, die sicher an derselben Spannung liegen?}
+Nein: An jedem der Knoten $C$ und $D$ treffen drei Widerstände zusammen, und $R_3$ verbindet die beiden Zweige („Brückenzweig“). Kein Widerstandspaar ist rein in Reihe oder rein parallel. Die Brücke ist auch nicht abgeglichen ($R_1/R_2 = 0{,}5 \neq R_4/R_5 = 1{,}5$), $R_3$ darf also nicht weggelassen werden.
+\schritt{b) Dreieck $\to$ Stern}
+Summe der Dreieckswiderstände: $R_1 + R_2 + R_3 = \SI{180}{\ohm}$. An Knoten $A$ liegen $R_1$ und $R_2$, an $C$ liegen $R_1$ und $R_3$, an $D$ liegen $R_2$ und $R_3$:
+\begin{align*}
+  R_A &= \frac{R_1 R_2}{\SI{180}{\ohm}} = \frac{30\cdot 60}{180}\,\si{\ohm} = \ergebnis{\SI{10}{\ohm}}\\
+  R_C &= \frac{R_1 R_3}{\SI{180}{\ohm}} = \frac{30\cdot 90}{180}\,\si{\ohm} = \ergebnis{\SI{15}{\ohm}}\\
+  R_D &= \frac{R_2 R_3}{\SI{180}{\ohm}} = \frac{60\cdot 90}{180}\,\si{\ohm} = \ergebnis{\SI{30}{\ohm}}
+\end{align*}
+Neue Schaltung (Sternpunkt $S$):
+\begin{center}
+\begin{circuitikz}
+  \draw (-1,2) node[left]{$A$} to[short, o-] (0,2) to[R, l=$R_A$, -*] (2,2) node[below left]{$S$};
+  \draw (2,2) -- (2,3.5) to[R, l=$R_C$] (4.2,3.5) node[circ]{} node[above]{$C$} to[R, l=$R_4$] (6.5,3.5) -- (6.5,2);
+  \draw (2,2) -- (2,0.5) to[R, l_=$R_D$] (4.2,0.5) node[circ]{} node[below]{$D$} to[R, l_=$R_5$] (6.5,0.5) -- (6.5,2);
+  \draw (6.5,2) to[short, *-o] (7.5,2) node[right]{$B$};
+\end{circuitikz}
+\end{center}
+\schritt{c) Gesamtwiderstand}
+Jetzt gibt es nur noch Reihen- und Parallelschaltungen:
+\[
+  R_{AB} = R_A + (R_C + R_4)\parallel(R_D + R_5) = \SI{10}{\ohm} + \SI{60}{\ohm}\parallel\SI{60}{\ohm} = \SI{10}{\ohm}+\SI{30}{\ohm} = \ergebnis{\SI{40}{\ohm}}
+\]
+\schritt{d) Stern $\to$ Dreieck}
+Mit den Formeln aus dem Skript (Fall 2):
+\begin{align*}
+  R_{12} &= R_{Y1} + R_{Y2} + \frac{R_{Y1}R_{Y2}}{R_{Y3}} = 10 + 20 + \frac{200}{20} = \ergebnis{\SI{40}{\ohm}}\\
+  R_{23} &= R_{Y2} + R_{Y3} + \frac{R_{Y2}R_{Y3}}{R_{Y1}} = 20 + 20 + \frac{400}{10} = \ergebnis{\SI{80}{\ohm}}\\
+  R_{31} &= R_{Y3} + R_{Y1} + \frac{R_{Y3}R_{Y1}}{R_{Y2}} = 20 + 10 + \frac{200}{20} = \ergebnis{\SI{40}{\ohm}}
+\end{align*}
+(alle Werte in $\si{\ohm}$). Probe mit der Merkregel Dreieck $\to$ Stern: an Knoten 1 liegen $R_{12}$ und $R_{31}$:
+\[ R_{Y1} = \frac{R_{12}R_{31}}{R_{12}+R_{23}+R_{31}} = \frac{40\cdot 40}{160}\,\si{\ohm} = \SI{10}{\ohm} \;\checkmark \]
+\schritt{e) Symmetrischer Fall}
+Für $R_{12} = R_{23} = R_{31} = R_\Delta$ wird jeder Sternwiderstand $R_Y = \frac{R_\Delta^2}{3R_\Delta} = \frac{R_\Delta}{3}$, also $R_Y = \ergebnis{\SI{10}{\ohm}}$ (bzw.\ $R_\Delta = 3R_Y$).
+\typfehler{Beim Umwandeln die Zuordnung der Widerstände zu den Knoten vertauschen: Zeichnen Sie Dreieck und Stern übereinander und beschriften Sie die Knoten, \emph{bevor} Sie rechnen. Und: Nach der Umwandlung verschwinden die Knoten nicht -- $C$ und $D$ existieren weiterhin, nur $R_1, R_2, R_3$ werden ersetzt.}
+\end{loesung}
+
+\end{document}

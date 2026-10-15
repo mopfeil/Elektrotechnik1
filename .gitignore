@@ -1,0 +1,8 @@
+# Erzeugte Dateien (mit `make` reproduzierbar)
+build/
+*.aux
+*.log
+*.out
+
+# Vorlesungsskript (Fremdmaterial, nicht versionieren)
+GET_Teil1_Gleichspannung_Schenke_Klein.pdf

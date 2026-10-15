@@ -1,0 +1,187 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{get-uebung}
+
+\blatt{5}{Spannungsteiler und Stromteiler}{Kap.~2.3--2.4}
+
+\begin{document}
+
+\blattkopf{
+  \item Teilspannungen in Reihenschaltungen direkt mit der Spannungsteilerregel berechnen,
+  \item einen Spannungsteiler für eine gewünschte Ausgangsspannung dimensionieren,
+  \item erklären, warum eine Last den Spannungsteiler verfälscht, und den Fehler abschätzen,
+  \item ein belastetes Potentiometer berechnen,
+  \item Teilströme mit der Stromteilerregel -- mit Widerständen und mit Leitwerten -- bestimmen.
+}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Unbelasteter Spannungsteiler}{12}
+\gegeben{$U = \SI{12}{V}$, $R_1 = \SI{1}{k\ohm}$, $R_2 = \SI{2}{k\ohm}$, $R_3 = \SI{3}{k\ohm}$}
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[V, v<=$U$] (0,4.5) -- (3,4.5)
+        to[R, l_=$R_1$, v^=$U_1$] (3,3)
+        to[R, l_=$R_2$, v^=$U_2$] (3,1.5)
+        to[R, l_=$R_3$, v^=$U_3$] (3,0) -- (0,0);
+\end{circuitikz}
+\end{center}
+\begin{teilaufgaben}
+  \item Berechnen Sie $U_1$, $U_2$ und $U_3$ mit der Spannungsteilerregel, \emph{ohne} vorher den Strom zu berechnen.
+  \item Wie groß ist die Spannung über $R_2$ und $R_3$ zusammen? Lösen Sie dies mit einer einzigen Spannungsteiler-Gleichung.
+  \item Entwurf: Aus $U = \SI{12}{V}$ sollen mit zwei Widerständen $R_a$ (oben) und $R_b$ (unten) genau $\SI{5}{V}$ an $R_b$ erzeugt werden. Durch den Teiler soll ein Querstrom von $\SI{1}{mA}$ fließen. Bestimmen Sie $R_a$ und $R_b$.
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Spannungsteilerregel}
+\leitfrage{Warum darf hier die Spannungsteilerregel verwendet werden?}
+Durch alle drei Widerstände fließt derselbe Strom (keine Abzweigung). Dann verhalten sich die Spannungen wie die Widerstände, mit $R_\text{ges} = \SI{6}{k\ohm}$:
+\[
+  U_1 = U\frac{R_1}{R_\text{ges}} = \SI{12}{V}\cdot\frac{1}{6} = \ergebnis{\SI{2}{V}},\quad
+  U_2 = \SI{12}{V}\cdot\frac{2}{6} = \ergebnis{\SI{4}{V}},\quad
+  U_3 = \SI{12}{V}\cdot\frac{3}{6} = \ergebnis{\SI{6}{V}}
+\]
+Kontrolle mit dem Maschensatz: $2 + 4 + 6 = 12$ \checkmark
+\schritt{b) Mehrere Widerstände zusammenfassen}
+Im Zähler steht einfach die Summe der Widerstände, an denen die gesuchte Spannung abfällt:
+\[ U_{23} = U\frac{R_2+R_3}{R_1+R_2+R_3} = \SI{12}{V}\cdot\frac{5}{6} = \ergebnis{\SI{10}{V}} \]
+\schritt{c) Dimensionierung}
+\leitfrage{Welche Gleichung liefert der Querstrom, welche das Teilerverhältnis?}
+Aus dem Querstrom folgt der Gesamtwiderstand: $R_a + R_b = U/I = \SI{12}{V}/\SI{1}{mA} = \SI{12}{k\ohm}$.\\
+Aus der Spannungsteilerregel: $\frac{R_b}{R_a+R_b} = \frac{\SI{5}{V}}{\SI{12}{V}} \;\Rightarrow\; R_b = \frac{5}{12}\cdot\SI{12}{k\ohm} = \ergebnis{\SI{5}{k\ohm}}$, \quad $R_a = \ergebnis{\SI{7}{k\ohm}}$.
+\typfehler{Im Zähler den „falschen“ Widerstand einsetzen. Beim \emph{Spannungs}teiler steht im Zähler der Widerstand, an dem die gesuchte Spannung abfällt -- beim Stromteiler (Aufgabe 5.4) ist es genau umgekehrt!}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Belasteter Spannungsteiler}{18}
+Ein Spannungsteiler aus $R_1 = R_2 = \SI{10}{k\ohm}$ liegt an $U = \SI{12}{V}$. An $R_2$ wird ein Verbraucher $R_L$ angeschlossen.
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[V, v<=$U$] (0,3) -- (2.5,3)
+        to[R, l_=$R_1$, v^=$U_1$] (2.5,1.5)
+        to[R, l_=$R_2$, -*] (2.5,0) -- (0,0);
+  \draw (2.5,1.5) node[circ]{} -- (5,1.5) to[R, l_=$R_L$] (5,0) -- (2.5,0);
+  \draw (5,1.5) to[short, *-o] (6.5,1.5);
+  \draw (5,0) to[short, *-o] (6.5,0);
+  \draw (6.5,1.5) to[open, v^=$U_2$] (6.5,0);
+\end{circuitikz}
+\end{center}
+\begin{teilaufgaben}
+  \item Wie groß ist $U_2$ ohne Last ($R_L \to \infty$)?
+  \item Berechnen Sie $U_2$ für $R_L = \SI{10}{k\ohm}$, $\SI{100}{k\ohm}$ und $\SI{1}{M\ohm}$ sowie jeweils die relative Abweichung vom Leerlaufwert.
+  \item Ein Kommilitone rechnet bei Last weiterhin mit $U_2 = U\cdot\frac{R_2}{R_1+R_2}$. Erklären Sie mit Hilfe der Gültigkeitsbedingung der Spannungsteilerregel, warum das falsch ist.
+  \item Leiten Sie eine Faustregel ab: Wie groß muss $R_L$ im Vergleich zu $R_2$ sein, damit der Fehler unter etwa $\SI{5}{\percent}$ bleibt?
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Leerlauf}
+$U_2 = U\frac{R_2}{R_1+R_2} = \SI{12}{V}\cdot\frac{10}{20} = \ergebnis{\SI{6}{V}}$
+\schritt{b) Mit Last -- erst zusammenfassen, dann teilen}
+\leitfrage{Durch welche Elemente fließt jetzt derselbe Strom?}
+Durch $R_1$ fließt der Gesamtstrom, der sich danach auf $R_2$ und $R_L$ aufteilt. Fassen wir $R_2\parallel R_L$ zusammen, entsteht wieder ein unverzweigter Teiler aus $R_1$ und $R_2\parallel R_L$:
+\[ U_2 = U\cdot\frac{R_2\parallel R_L}{R_1 + R_2\parallel R_L} \]
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+$R_L$ & $R_2\parallel R_L$ & $U_2$ & Abweichung vom Leerlauf\\\midrule
+$\SI{10}{k\ohm}$  & $\SI{5}{k\ohm}$     & $\SI{4.00}{V}$ & $\SI{-33.3}{\percent}$\\
+$\SI{100}{k\ohm}$ & $\SI{9.09}{k\ohm}$  & $\SI{5.71}{V}$ & $\SI{-4.8}{\percent}$\\
+$\SI{1}{M\ohm}$   & $\SI{9.90}{k\ohm}$  & $\SI{5.97}{V}$ & $\SI{-0.5}{\percent}$\\\bottomrule
+\end{tabular}
+\end{center}
+Beispielrechnung für die erste Zeile: $U_2 = \SI{12}{V}\cdot\frac{5}{10+5} = \SI{4}{V}$.
+\schritt{c) Warum die einfache Formel versagt}
+Die Spannungsteilerregel setzt voraus, dass durch $R_1$ und $R_2$ \emph{derselbe} Strom fließt. Mit Last fließt durch $R_1$ der Strom $I_2 + I_L$, durch $R_2$ nur $I_2$. Die Bedingung ist verletzt. Erst nach Zusammenfassen von $R_2\parallel R_L$ gilt sie wieder.
+\schritt{d) Faustregel}
+Aus der Tabelle: Bei $R_L = 10\cdot R_2$ beträgt der Fehler knapp $\SI{5}{\percent}$, bei $R_L = 100\cdot R_2$ etwa $\SI{0.5}{\percent}$.
+\[ \ergebnis{R_L \gtrsim 10\cdot R_2} \]
+Merke: Je kleiner der Querstrom durch den Teiler im Vergleich zum Laststrom, desto stärker bricht die Spannung ein.
+\typfehler{Den Lastwiderstand in Reihe statt parallel zu $R_2$ einrechnen. Und: Die Spannung kann durch eine Last nur \emph{sinken}, nie steigen -- ein größeres Ergebnis als im Leerlauf ist immer ein Rechenfehler.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Belastetes Potentiometer}{12}
+Ein Potentiometer mit $R = \SI{10}{k\ohm}$ liegt an $U_0 = \SI{10}{V}$. Der Schleifer teilt es in die Teile $(1-p)R$ und $pR$ mit $0 \le p \le 1$. Zwischen Schleifer und unterem Ende ist eine Last $R_L = \SI{10}{k\ohm}$ angeschlossen.
+\begin{center}
+\begin{circuitikz}
+  \draw (-0.6,0) to[V, v<=$U_0$] (-0.6,3.5) -- (2.5,3.5)
+        to[R, l_=$(1-p)R$] (2.5,1.75)
+        to[R, l_=$pR$] (2.5,0) -- (-0.6,0);
+  \draw[dashed, gray] (0.7,-0.2) rectangle (3.3,3.7);
+  \node[gray, font=\small] at (2,3.95) {Potentiometer};
+  \draw (2.5,1.75) to[short, *-] (5,1.75) to[R, l_=$R_L$, v^=$U$] (5,0) -- (2.5,0) node[circ]{};
+\end{circuitikz}
+\end{center}
+\begin{teilaufgaben}
+  \item Geben Sie $U$ in Abhängigkeit von $p$ für den unbelasteten Fall ($R_L\to\infty$) an.
+  \item Berechnen Sie $U$ mit Last für die Mittelstellung $p = 0{,}5$.
+  \item Bei welcher Schleiferstellung $p$ liegen mit Last genau $\SI{5}{V}$ an $R_L$?
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Unbelastet}
+Beide Teile werden vom selben Strom durchflossen, also gilt die Spannungsteilerregel:
+\[ U = U_0\frac{pR}{(1-p)R + pR} = \ergebnis{p\cdot U_0} \]
+Die Ausgangsspannung ist linear in $p$ -- genau dafür benutzt man ein Potentiometer.
+\schritt{b) Mit Last bei $p = 0{,}5$}
+Unterer Teil parallel zur Last: $pR\parallel R_L = \SI{5}{k\ohm}\parallel\SI{10}{k\ohm} = \SI{3.33}{k\ohm}$.
+\[ U = U_0\frac{pR\parallel R_L}{(1-p)R + pR\parallel R_L} = \SI{10}{V}\cdot\frac{3{,}33}{5 + 3{,}33} = \ergebnis{\SI{4}{V}} \]
+Statt $\SI{5}{V}$ wie im Leerlauf -- die Last „zieht die Spannung herunter“.
+\schritt{c) Gesuchte Schleiferstellung}
+\leitfrage{$U = U_0/2$ bedeutet, dass beide Teile des Teilers gleich groß sein müssen. Welche zwei Widerstände sind das?}
+Bedingung: $(1-p)R = pR\parallel R_L$. Mit $R = R_L$ (alle Werte in $\si{k\ohm}$):
+\[
+  10(1-p) = \frac{10p\cdot 10}{10p + 10} = \frac{10p}{p+1}
+  \;\Rightarrow\; (1-p)(1+p) = p
+  \;\Rightarrow\; p^2 + p - 1 = 0
+\]
+\[ p = -\tfrac12 + \sqrt{\tfrac14 + 1} = \frac{\sqrt5 - 1}{2} \approx \ergebnis{0{,}618} \]
+(die negative Lösung ist physikalisch sinnlos). Probe: $pR\parallel R_L = 6{,}18\parallel 10 \approx \SI{3.82}{k\ohm} = (1-p)R$ \checkmark
+\typfehler{Mit Last weiter $U = pU_0$ rechnen. Bei c) die Gleichung ohne Hilfsidee aufstellen -- das geht auch, wird aber länglich. Die Überlegung „gleiche Teilspannungen $\Leftrightarrow$ gleiche Widerstände“ spart viel Rechnung.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Stromteiler mit Widerständen und Leitwerten}{15}
+Ein Strom $I = \SI{60}{mA}$ teilt sich auf drei parallele Widerstände auf: $R_1 = \SI{20}{\ohm}$, $R_2 = \SI{30}{\ohm}$, $R_3 = \SI{60}{\ohm}$.
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[I, i=$I$] (0,3) -- (2,3) -- (6,3);
+  \draw (2,3) to[R, l_=$R_1$, i>^=$I_1$, *-*] (2,0);
+  \draw (4,3) to[R, l_=$R_2$, i>^=$I_2$, *-*] (4,0);
+  \draw (6,3) to[R, l_=$R_3$, i>^=$I_3$] (6,0);
+  \draw (6,0) -- (0,0);
+\end{circuitikz}
+\end{center}
+\begin{teilaufgaben}
+  \item Rechnen Sie die Widerstände in Leitwerte um und bestimmen Sie $I_1$, $I_2$, $I_3$ mit der Stromteilerregel für Leitwerte.
+  \item Berechnen Sie $I_1$ noch einmal, diesmal mit der Stromteilerregel für \emph{zwei} Widerstände. Fassen Sie dafür $R_2$ und $R_3$ zusammen.
+  \item Welche Spannung liegt an den Widerständen?
+  \item Welchen Widerstand $R_4$ muss man zusätzlich parallel schalten, damit durch $R_1$ nur noch $I_1 = \SI{20}{mA}$ fließen?
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Leitwerte}
+$G_1 = \frac{1}{\SI{20}{\ohm}} = \SI{50}{mS}$, $G_2 = \SI{33.3}{mS}$, $G_3 = \SI{16.7}{mS}$, \quad $G_\text{ges} = G_1+G_2+G_3 = \SI{100}{mS}$.
+\leitfrage{Mit Leitwerten sieht der Stromteiler genauso aus wie der Spannungsteiler mit Widerständen. Warum?}
+Weil bei Parallelschaltung dieselbe Spannung anliegt und $I_n = G_n\cdot U$ gilt -- die Ströme verhalten sich wie die Leitwerte:
+\[
+  I_1 = I\frac{G_1}{G_\text{ges}} = \SI{60}{mA}\cdot\frac{50}{100} = \ergebnis{\SI{30}{mA}},\quad
+  I_2 = \SI{60}{mA}\cdot\frac{33{,}3}{100} = \ergebnis{\SI{20}{mA}},\quad
+  I_3 = \ergebnis{\SI{10}{mA}}
+\]
+Kontrolle mit dem Knotensatz: $30 + 20 + 10 = 60$ \checkmark. Der kleinste Widerstand führt den größten Strom.
+\schritt{b) Zwei-Widerstands-Regel}
+$R_{23} = R_2\parallel R_3 = \frac{30\cdot 60}{90}\,\si{\ohm} = \SI{20}{\ohm}$. Beim Stromteiler mit Widerständen steht im Zähler der \emph{andere} Widerstand:
+\[ I_1 = I\cdot\frac{R_{23}}{R_1 + R_{23}} = \SI{60}{mA}\cdot\frac{20}{40} = \ergebnis{\SI{30}{mA}} \;\checkmark \]
+\schritt{c) Spannung}
+$U = \frac{I}{G_\text{ges}} = \frac{\SI{60}{mA}}{\SI{100}{mS}} = \ergebnis{\SI{0.6}{V}}$ \quad (Probe: $I_1R_1 = \SI{30}{mA}\cdot\SI{20}{\ohm} = \SI{0.6}{V}$ \checkmark)
+\schritt{d) Zusätzlicher Parallelwiderstand}
+\leitfrage{Welcher Anteil von $I$ soll durch $G_1$ fließen, und welchen Gesamtleitwert erfordert das?}
+$I_1/I = 20/60 = 1/3 = G_1/G_\text{ges}' \;\Rightarrow\; G_\text{ges}' = 3G_1 = \SI{150}{mS}$.
+\[ G_4 = G_\text{ges}' - G_\text{ges} = \SI{150}{mS} - \SI{100}{mS} = \SI{50}{mS} \quad\Rightarrow\quad R_4 = \ergebnis{\SI{20}{\ohm}} \]
+\typfehler{Stromteiler mit Widerständen wie einen Spannungsteiler aufschreiben ($I_1 = I\cdot R_1/(R_1+R_{23})$) -- dann bekäme der \emph{größere} Widerstand den größeren Strom, was offensichtlich falsch ist. Mit Leitwerten passiert dieser Fehler nicht.}
+\end{loesung}
+
+\end{document}

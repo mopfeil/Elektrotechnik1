@@ -1,0 +1,277 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{get-uebung}
+
+\blatt{10}{Ersatzquellen, Leistungsanpassung und fiese Fallen}{Kap.~2.11--2.13}
+
+\begin{document}
+
+\blattkopf{
+  \item eine lineare Zweipol-Schaltung durch eine Ersatzspannungs- oder Ersatzstromquelle ($U_0$, $I_k$, $R_i$) ersetzen,
+  \item den Innenwiderstand durch Deaktivieren aller Quellen bestimmen,
+  \item den Lastwiderstand für maximale Leistung angeben und Leistung sowie Wirkungsgrad bewerten,
+  \item Bauelemente ohne Einfluss auf den Rest der Schaltung („fiese Fallen“) sofort erkennen,
+  \item den Strom im Brückenzweig einer nicht abgeglichenen Wheatstonebrücke mit einer Ersatzquelle berechnen.
+}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Ersatzspannungs- und Ersatzstromquelle}{16}
+Die folgende Schaltung soll bezüglich der Klemmen A--B durch eine Ersatzquelle beschrieben werden.
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[V, v<=$U_q$] (0,3)
+        to[R, l=$R_1$] (3,3)
+        to[R, l=$R_3$] (6,3) -- (7.5,3) node[ocirc]{} node[right]{A};
+  \draw (3,3) to[R, l_=$R_2$, *-*] (3,0);
+  \draw (6,0) to[I, i=$I_q$, *-*] (6,3);
+  \draw (0,0) -- (7.5,0) node[ocirc]{} node[right]{B};
+  \draw (7.5,2.9) to[open, v^=$U_{AB}$] (7.5,0.1);
+\end{circuitikz}
+\end{center}
+\gegeben{$U_q = \SI{24}{V}$, $I_q = \SI{2}{A}$, $R_1 = \SI{4}{\ohm}$, $R_2 = \SI{12}{\ohm}$, $R_3 = \SI{2}{\ohm}$}
+\begin{teilaufgaben}
+  \item Bestimmen Sie den Innenwiderstand $R_i$ der Schaltung bezüglich der Klemmen A--B.
+  \item Berechnen Sie die Leerlaufspannung $U_0 = U_{AB}$ (Klemmen offen).
+  \item Geben Sie die Ersatzspannungsquelle und die Ersatzstromquelle mit allen Werten an (Skizze!).
+  \item Kontrolle: Berechnen Sie den Kurzschlussstrom $I_k$ direkt in der Originalschaltung, indem Sie A und B kurzschließen.
+  \item An die Klemmen wird ein Lastwiderstand $R_L = \SI{9}{\ohm}$ angeschlossen. Wie groß sind Strom und Spannung am Lastwiderstand?
+\end{teilaufgaben}
+\begin{tipp}Deaktivieren heißt: ideale Spannungsquelle $\to$ Kurzschluss, ideale Stromquelle $\to$ Leerlauf. Für $U_0$ hilft der Überlagerungssatz.\end{tipp}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Innenwiderstand}
+\leitfrage{Wie sieht die Schaltung aus, wenn $U_q$ durch einen Kurzschluss und $I_q$ durch einen Leerlauf ersetzt wird?}
+Der Zweig mit $I_q$ verschwindet. Von den Klemmen aus sieht man $R_3$ in Reihe zur Parallelschaltung von $R_1$ (jetzt nach Masse kurzgeschlossen) und $R_2$:
+\[
+  R_i = R_3 + R_1\,\|\,R_2 = \SI{2}{\ohm} + \frac{\SI{4}{\ohm}\cdot\SI{12}{\ohm}}{\SI{16}{\ohm}} = \SI{2}{\ohm}+\SI{3}{\ohm} = \ergebnis{\SI{5}{\ohm}}
+\]
+\schritt{b) Leerlaufspannung mit dem Überlagerungssatz}
+\emph{Nur $U_q$ aktiv} ($I_q$ als Leerlauf): Durch $R_3$ fließt kein Strom, also liegt an den Klemmen die Spannung an $R_2$ (Spannungsteiler):
+\[
+  U_0' = U_q\,\frac{R_2}{R_1+R_2} = \SI{24}{V}\cdot\frac{12}{16} = \SI{18}{V}
+\]
+\emph{Nur $I_q$ aktiv} ($U_q$ als Kurzschluss): $I_q$ fließt in Klemme A und dann vollständig durch $R_3$ und $R_1\|R_2$ zurück -- also genau durch den Widerstand $R_i$:
+\[
+  U_0'' = I_q\cdot(R_3 + R_1\|R_2) = \SI{2}{A}\cdot\SI{5}{\ohm} = \SI{10}{V}
+\]
+\[
+  U_0 = U_0' + U_0'' = \ergebnis{\SI{28}{V}}
+\]
+\schritt{c) Ersatzquellen}
+Ersatzspannungsquelle: $U_0 = \SI{28}{V}$ in Reihe mit $R_i = \SI{5}{\ohm}$.\\
+Ersatzstromquelle: $I_k = U_0/R_i = \SI{28}{V}/\SI{5}{\ohm} = \ergebnis{\SI{5.6}{A}}$ parallel zu $R_i = \SI{5}{\ohm}$ (Pfeil von $I_k$ zeigt zur Klemme A).
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[V, v<=$U_0$] (0,2.5) to[R, l=$R_i$] (2.5,2.5) to[short,-o] (3,2.5) node[right]{A};
+  \draw (0,0) to[short,-o] (3,0) node[right]{B};
+  \draw (6,0) to[I, i=$I_k$] (6,2.5) to[short,-o] (8.5,2.5) node[right]{A};
+  \draw (7.5,2.5) to[R, l=$R_i$, *-*] (7.5,0);
+  \draw (6,0) to[short,-o] (8.5,0) node[right]{B};
+\end{circuitikz}
+\end{center}
+\schritt{d) Kontrolle über den Kurzschlussstrom}
+\leitfrage{Bei kurzgeschlossenen Klemmen liegt A auf Masse. Welche Spannung $U_K$ stellt sich am oberen Knoten von $R_2$ ein?}
+Knotensatz am Knoten K (Ströme hinein $=$ Ströme heraus), $R_3$ liegt nun zwischen K und Masse:
+\[
+  \frac{U_q - U_K}{R_1} = \frac{U_K}{R_2} + \frac{U_K}{R_3}
+  \;\Rightarrow\; \SI{6}{A} = U_K\left(\tfrac14+\tfrac1{12}+\tfrac12\right)\si{S}
+  \;\Rightarrow\; U_K = \SI{7.2}{V}
+\]
+Im Kurzschluss fließen der Strom durch $R_3$ und der Quellstrom $I_q$ zusammen:
+$I_k = U_K/R_3 + I_q = \SI{3.6}{A}+\SI{2}{A} = \SI{5.6}{A}$ \checkmark
+\schritt{e) Lastwiderstand anschließen}
+Mit der Ersatzspannungsquelle ist das nur noch ein einfacher Stromkreis:
+\[
+  I_L = \frac{U_0}{R_i+R_L} = \frac{\SI{28}{V}}{\SI{14}{\ohm}} = \ergebnis{\SI{2}{A}},\qquad
+  U_L = R_L\cdot I_L = \ergebnis{\SI{18}{V}}
+\]
+\typfehler{Beim Innenwiderstand die Stromquelle kurzschließen statt sie zu entfernen. Bei $U_0$ den Beitrag der Stromquelle vergessen („durch $R_3$ fließt im Leerlauf kein Strom“ gilt nur, solange $I_q$ deaktiviert ist!).}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Leistungsanpassung}{14}
+Eine reale Spannungsquelle ($U_0 = \SI{12}{V}$, $R_i = \SI{2}{\ohm}$) speist einen einstellbaren Lastwiderstand $R_L$.
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[V, v<=$U_0$] (0,2.5) to[R, l=$R_i$] (3,2.5) to[short, i=$I$] (4.5,2.5)
+        to[vR, l_=$R_L$, v^=$U$] (4.5,0) -- (0,0);
+  \draw[dashed,gray] (-1.1,-0.4) rectangle (3.4,3.25);
+\end{circuitikz}
+\end{center}
+\begin{teilaufgaben}
+  \item Bei welchem Wert von $R_L$ nimmt der Lastwiderstand die größte Leistung auf? Wie groß ist $P_\text{max}$?
+  \item Vervollständigen Sie die Tabelle. Der Wirkungsgrad ist $\eta = P_L/P_\text{Quelle}$, wobei $P_\text{Quelle} = U_0\cdot I$ die von der idealen Quelle abgegebene Leistung ist.
+  \begin{center}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{l|c|c|c|c}
+    $R_L$ & $\SI{1}{\ohm}$ & $\SI{2}{\ohm}$ & $\SI{4}{\ohm}$ & $\SI{20}{\ohm}$\\\hline
+    $I$ & & & & \\\hline
+    $P_L$ & & & & \\\hline
+    $\eta$ & & & & \\
+  \end{tabular}
+  \end{center}
+  \item Zeigen Sie allgemein, dass $\eta = \dfrac{R_L}{R_i+R_L}$ gilt. Welcher Wirkungsgrad ergibt sich bei Leistungsanpassung?
+  \item Ein Kraftwerk wird nie in Leistungsanpassung betrieben, eine Antenne am Empfänger dagegen schon. Begründen Sie.
+  \item Welcher Lastwiderstand entnimmt der Schaltung aus Aufgabe~10.1 die größte Leistung, und wie groß ist diese?
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Bedingung für maximale Leistung}
+Nach Skript Kap.~2.12 ist die Leistung maximal für $R_L = R_i$:
+\[
+  R_L = \ergebnis{\SI{2}{\ohm}},\qquad P_\text{max} = \frac{U_0^2}{4R_i} = \frac{(\SI{12}{V})^2}{\SI{8}{\ohm}} = \ergebnis{\SI{18}{W}}
+\]
+\schritt{b) Tabelle}
+\leitfrage{Welche drei Formeln brauchen Sie? $I = U_0/(R_i+R_L)$, $P_L = I^2R_L$ und $\eta = P_L/(U_0 I)$.}
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{l|c|c|c|c}
+  $R_L$ & $\SI{1}{\ohm}$ & $\SI{2}{\ohm}$ & $\SI{4}{\ohm}$ & $\SI{20}{\ohm}$\\\hline
+  $I$ & $\SI{4}{A}$ & $\SI{3}{A}$ & $\SI{2}{A}$ & $\SI{0.545}{A}$\\\hline
+  $P_L$ & $\SI{16}{W}$ & $\SI{18}{W}$ & $\SI{16}{W}$ & $\SI{5.95}{W}$\\\hline
+  $\eta$ & $\SI{33.3}{\percent}$ & $\SI{50}{\percent}$ & $\SI{66.7}{\percent}$ & $\SI{90.9}{\percent}$\\
+\end{tabular}
+\end{center}
+Beobachtung: Das Leistungsmaximum liegt bei $R_L = R_i$; der Wirkungsgrad steigt dagegen mit $R_L$ immer weiter an.
+\schritt{c) Wirkungsgrad allgemein}
+Durch $R_i$ und $R_L$ fließt derselbe Strom $I$:
+\[
+  \eta = \frac{P_L}{P_\text{Quelle}} = \frac{I^2R_L}{I^2(R_i+R_L)} = \frac{R_L}{R_i+R_L}
+  \qquad\xrightarrow{R_L=R_i}\qquad \eta = \ergebnis{\tfrac12 = \SI{50}{\percent}}
+\]
+Bei Leistungsanpassung wird also genau die Hälfte der Leistung im Innenwiderstand verheizt.
+\schritt{d) Kraftwerk vs.\ Antenne}
+Im Kraftwerk kommt es auf den \emph{Wirkungsgrad} an: $\SI{50}{\percent}$ Verlust wären unbezahlbar und würden den Generator überhitzen. Deshalb gilt dort $R_L \gg R_i$.
+Beim Empfänger ist das Antennensignal winzig, man will \emph{möglichst viel Leistung} herausholen -- der Wirkungsgrad spielt keine Rolle. Deshalb wird dort angepasst.
+\schritt{e) Anwendung auf Aufgabe 10.1}
+Die Ersatzquelle hat $U_0 = \SI{28}{V}$ und $R_i = \SI{5}{\ohm}$:
+\[
+  R_L = R_i = \ergebnis{\SI{5}{\ohm}},\qquad P_\text{max} = \frac{(\SI{28}{V})^2}{4\cdot\SI{5}{\ohm}} = \ergebnis{\SI{39.2}{W}}
+\]
+Genau dafür ist die Ersatzquelle nützlich: Ohne sie wäre diese Frage sehr mühsam.
+\typfehler{$P_\text{max} = U_0^2/R_i$ statt $U_0^2/(4R_i)$ -- bei Anpassung liegt nur $U_0/2$ am Lastwiderstand. Leistungsanpassung mit „maximalem Wirkungsgrad“ verwechseln.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Fiese Fallen}{14}
+\textbf{Teil 1:} Gegeben ist die folgende Schaltung.
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[V, v<=$U$, i=$I_U$] (0,3) -- (1.5,3)
+        to[R, l=$R_1$, *-*] (4.5,3) -- (7,3)
+        to[R, l=$R_5$] (7,1.5) to[I, i<=$I_q$] (7,0) -- (0,0);
+  \draw (1.5,3) to[R, l_=$R_4$, -*] (1.5,0);
+  \draw (4.5,3) to[R, l=$R_L$, i>^=$I_L$, -*] (4.5,0);
+\end{circuitikz}
+\end{center}
+\gegeben{$U = \SI{10}{V}$, $I_q = \SI{1}{A}$, $R_1 = R_L = \SI{5}{\ohm}$, $R_4 = \SI{100}{\ohm}$, $R_5 = \SI{47}{\ohm}$}
+\begin{teilaufgaben}
+  \item Welche Widerstände haben keinen Einfluss auf den Strom $I_L$? Begründen Sie kurz.
+  \item Berechnen Sie $I_L$.
+  \item Berechnen Sie den Strom $I_U$ der Spannungsquelle. Hat $R_4$ wirklich „gar keinen“ Einfluss?
+\end{teilaufgaben}
+\textbf{Teil 2:} Eine Wheatstonebrücke wird von $U_0 = \SI{9}{V}$ gespeist.
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[V, v<=$U_0$, i=$I_0$] (0,4) -- (6.5,4);
+  \draw (2.5,4) to[R, l_=$R_1$, *-*] (2.5,2) to[R, l_=$R_2$, -*] (2.5,0);
+  \draw (6.5,4) to[R, l=$R_3$] (6.5,2) to[R, l=$R_4$, *-] (6.5,0) -- (0,0);
+  \draw (2.5,2) to[R, l=$R_5$] (6.5,2);
+\end{circuitikz}
+\end{center}
+\gegeben{$R_1 = \SI{100}{\ohm}$, $R_2 = \SI{200}{\ohm}$, $R_3 = \SI{150}{\ohm}$, $R_4 = \SI{300}{\ohm}$, $R_5 = \SI{1}{k\ohm}$}
+\begin{teilaufgaben}[resume]
+  \item Berechnen Sie den Strom $I_0$, ohne ein Gleichungssystem aufzustellen.
+  \item Wie ändert sich $I_0$, wenn $R_5$ durch einen Kurzschluss ersetzt wird?
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Einflussfreie Bauelemente erkennen}
+\leitfrage{Welcher Widerstand liegt direkt parallel zu einer idealen Spannungsquelle, welcher in Reihe zu einer idealen Stromquelle?}
+\begin{itemize}[nosep]
+  \item $R_4$ liegt parallel zur idealen Spannungsquelle: An ihm liegt immer $U$, egal wie groß er ist. Für den Rest der Schaltung bleibt die Spannung am linken Knoten $U$.
+  \item $R_5$ liegt in Reihe zur idealen Stromquelle: Durch ihn fließt immer $I_q$, der Zweig liefert unabhängig von $R_5$ den Strom $I_q$ in den Knoten.
+\end{itemize}
+Also: $\ergebnis{R_4 \text{ und } R_5}$ haben keinen Einfluss auf $I_L$. Wir dürfen $R_4$ weglassen und $R_5$ kurzschließen.
+\schritt{b) Laststrom}
+Knotensatz am oberen Knoten von $R_L$ mit dem Potential $U_A$:
+\[
+  \frac{U-U_A}{R_1} + I_q = \frac{U_A}{R_L}
+  \;\Rightarrow\; \SI{2}{A} - \frac{U_A}{\SI{5}{\ohm}} + \SI{1}{A} = \frac{U_A}{\SI{5}{\ohm}}
+  \;\Rightarrow\; U_A = \SI{7.5}{V}
+\]
+\[
+  I_L = \frac{U_A}{R_L} = \ergebnis{\SI{1.5}{A}}
+\]
+\schritt{c) Strom der Spannungsquelle}
+Die Quelle versorgt $R_4$ und $R_1$:
+\[
+  I_U = \frac{U}{R_4} + \frac{U-U_A}{R_1} = \SI{0.1}{A} + \SI{0.5}{A} = \ergebnis{\SI{0.6}{A}}
+\]
+$R_4$ beeinflusst also sehr wohl den Strom (und die Leistung) der \emph{Quelle selbst} -- nur der \emph{Rest} der Schaltung merkt nichts davon. Genauso hängt die Spannung an der Stromquelle von $R_5$ ab.
+\schritt{d) Abgeglichene Brücke}
+\leitfrage{Ist die Brücke abgeglichen? Prüfen Sie $R_1/R_2 = R_3/R_4$.}
+$R_1/R_2 = 100/200 = 0{,}5$ und $R_3/R_4 = 150/300 = 0{,}5$ \checkmark. Die Brücke ist abgeglichen, durch $R_5$ fließt kein Strom -- wir dürfen ihn durch einen Leerlauf ersetzen:
+\[
+  R_\text{ges} = (R_1+R_2)\,\|\,(R_3+R_4) = \frac{\SI{300}{\ohm}\cdot\SI{450}{\ohm}}{\SI{750}{\ohm}} = \SI{180}{\ohm},
+  \qquad I_0 = \frac{\SI{9}{V}}{\SI{180}{\ohm}} = \ergebnis{\SI{50}{mA}}
+\]
+\schritt{e) $R_5$ kurzgeschlossen}
+Gar nicht: $I_0 = \SI{50}{mA}$. Kontrolle: Mit Kurzschluss ist $R_\text{ges} = R_1\|R_3 + R_2\|R_4 = \SI{60}{\ohm} + \SI{120}{\ohm} = \SI{180}{\ohm}$ \checkmark
+\typfehler{Mit großem Aufwand ein Gleichungssystem aufstellen, statt zuerst nach einflussfreien Bauelementen zu suchen. Aus „kein Einfluss auf den Rest“ fälschlich schließen, dass auch der Quellenstrom unverändert bleibt.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Widerstand im Brückenzweig}{14}
+In der nicht abgeglichenen Brücke soll der Strom $I_5$ im Brückenwiderstand $R_5$ bestimmt werden.
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[V, v<=$U_0$] (0,4) -- (6.5,4);
+  \draw (2.5,4) to[R, l_=$R_1$, *-*] (2.5,2) node[left=2pt]{A} to[R, l_=$R_2$, -*] (2.5,0);
+  \draw (6.5,4) to[R, l=$R_3$] (6.5,2) node[right=2pt]{B} to[R, l=$R_4$, *-] (6.5,0) -- (0,0);
+  \draw (2.5,2) to[R, l=$R_5$, i>_=$I_5$] (6.5,2);
+\end{circuitikz}
+\end{center}
+\gegeben{$U_0 = \SI{12}{V}$, $R_1 = R_2 = \SI{2}{k\ohm}$, $R_3 = \SI{1}{k\ohm}$, $R_4 = \SI{3}{k\ohm}$, $R_5 = \SI{1.25}{k\ohm}$}
+\begin{teilaufgaben}
+  \item Trennen Sie $R_5$ heraus und berechnen Sie die Leerlaufspannung $U_{AB,0}$ zwischen den Punkten A und B.
+  \item Bestimmen Sie den Innenwiderstand $R_i$ der Restschaltung zwischen A und B.
+  \item Berechnen Sie $I_5$ und die Spannung an $R_5$. In welche Richtung fließt der Strom tatsächlich?
+  \item Welcher Wert von $R_5$ würde die größte Leistung aufnehmen? Wie groß wäre sie?
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Leerlaufspannung}
+\leitfrage{Ohne $R_5$ bleiben zwei unabhängige Spannungsteiler. Welche Spannung liegt jeweils am unteren Widerstand?}
+\[
+  U_{A0} = U_0\frac{R_2}{R_1+R_2} = \SI{12}{V}\cdot\frac{2}{4} = \SI{6}{V},\qquad
+  U_{B0} = U_0\frac{R_4}{R_3+R_4} = \SI{12}{V}\cdot\frac{3}{4} = \SI{9}{V}
+\]
+Maschensatz über die beiden unteren Widerstände:
+\[
+  U_{AB,0} = U_{A0} - U_{B0} = \ergebnis{-\SI{3}{V}}
+\]
+\schritt{b) Innenwiderstand}
+Die Spannungsquelle wird zum Kurzschluss -- oberer und unterer Draht liegen dann auf demselben Potential. Von A aus liegen $R_1$ und $R_2$ parallel, von B aus $R_3$ und $R_4$; beide Parallelschaltungen liegen in Reihe:
+\[
+  R_i = R_1\|R_2 + R_3\|R_4 = \SI{1}{k\ohm} + \SI{0.75}{k\ohm} = \ergebnis{\SI{1.75}{k\ohm}}
+\]
+\schritt{c) Strom im Brückenzweig}
+Ersatzspannungsquelle ($U_{AB,0}$, $R_i$) mit $R_5$ als Last:
+\[
+  I_5 = \frac{U_{AB,0}}{R_i+R_5} = \frac{-\SI{3}{V}}{\SI{3}{k\ohm}} = \ergebnis{-\SI{1}{mA}},\qquad
+  U_5 = R_5 I_5 = \ergebnis{-\SI{1.25}{V}}
+\]
+Das negative Vorzeichen bedeutet: Der Strom fließt tatsächlich von B nach A -- plausibel, denn B liegt im Leerlauf auf dem höheren Potential.
+\schritt{d) Maximale Leistung}
+Leistungsanpassung: $R_5 = R_i = \ergebnis{\SI{1.75}{k\ohm}}$,
+\[
+  P_\text{max} = \frac{U_{AB,0}^2}{4R_i} = \frac{(\SI{3}{V})^2}{\SI{7}{k\ohm}} \approx \ergebnis{\SI{1.29}{mW}}
+\]
+\typfehler{Beim Innenwiderstand $R_1+R_2$ parallel zu $R_3+R_4$ rechnen -- das wäre der Widerstand, den die \emph{Quelle} sieht, nicht der zwischen A und B. Das Vorzeichen von $U_{AB,0}$ unterschlagen und so die Stromrichtung falsch angeben.}
+\end{loesung}
+
+\end{document}

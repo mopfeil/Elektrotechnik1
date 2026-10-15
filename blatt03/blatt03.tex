@@ -1,0 +1,218 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{get-uebung}
+
+\blatt{3}{Kirchhoffsche Sätze}{Kap.~2.1}
+
+\begin{document}
+
+\blattkopf{
+  \item den Knotensatz an einzelnen Knoten und an Hüllflächen vorzeichenrichtig anwenden,
+  \item mit dem Maschensatz unbekannte Spannungen und Knotenpotentiale bestimmen,
+  \item für ein Netzwerk mit zwei Quellen die nötige Anzahl unabhängiger Knoten- und Maschengleichungen angeben und das Gleichungssystem lösen,
+  \item negative Ergebnisse richtig interpretieren.
+}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Knotensatz}{12}
+\begin{teilaufgaben}
+\item An einem Knoten treffen fünf Leitungen zusammen (Bild links). Gegeben sind $I_1 = \SI{3}{A}$, $I_2 = \SI{-1}{A}$, $I_3 = \SI{2}{A}$ und $I_5 = \SI{0.5}{A}$. Berechnen Sie $I_4$.
+\item Im Netzwerk rechts sind $I_\text{ein} = \SI{6}{A}$, $I_a = \SI{4}{A}$ und $I_d = \SI{1.5}{A}$ bekannt. Bestimmen Sie $I_b$, $I_c$, $I_e$ und $I_\text{aus}$. Die Werte der Widerstände werden nicht benötigt.
+\item Kontrollieren Sie Ihr Ergebnis aus b) mit einer Hüllfläche um das gesamte Netzwerk.
+\end{teilaufgaben}
+\begin{center}
+\begin{tikzpicture}[>=Latex,baseline=(k.center)]
+  \node[circle,fill,inner sep=1.8pt] (k) at (0,0) {};
+  \draw[thick,->] (-2,0) node[left]{$I_1$} -- (-0.12,0);
+  \draw[thick,->] (-1.3,1.3) node[above left]{$I_2$} -- (-0.1,0.1);
+  \draw[thick,->] (0.1,0.1) -- (1.3,1.3) node[above right]{$I_3$};
+  \draw[thick,->] (0.12,0) -- (2,0) node[right]{$I_4$};
+  \draw[thick,->] (0,-1.6) node[below]{$I_5$} -- (0,-0.12);
+\end{tikzpicture}
+\hspace{1.2cm}
+\begin{circuitikz}[baseline=(c.center)]
+  \coordinate (c) at (2,1.5);
+  \draw (-2.4,3) to[short, i=$I_\text{ein}$, o-] (0,3)
+        to[R, l=$R_1$, i=$I_a$, *-*] (4,3);
+  \draw (0,3) to[R, l_=$R_2$, i=$I_b$] (0,0);
+  \draw (4,0) to[R, l=$R_3$, i_=$I_c$, *-] (4,3);
+  \draw (0,0) to[R, l^=$R_4$, i_=$I_d$, *-] (4,0);
+  \draw (4,0) to[short, i=$I_\text{aus}$, -o] (6.4,0);
+  \draw (0,0) to[short, i=$I_e$, -o] (-2.4,0);
+  \node[below right] at (0,3) {$K_1$};
+  \node[below left] at (4,3) {$K_2$};
+  \node[above left] at (4,0) {$K_3$};
+  \node[above left] at (0,0) {$K_4$};
+\end{circuitikz}
+\end{center}
+\begin{tipp}Zählen Sie Ströme, deren Pfeil \emph{in} den Knoten zeigt, positiv und solche, deren Pfeil herauszeigt, negativ -- unabhängig vom Vorzeichen ihres Zahlenwerts.\end{tipp}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Einzelner Knoten}
+\leitfrage{Welche Pfeile zeigen in den Knoten hinein, welche heraus?}
+Hinein: $I_1$, $I_2$, $I_5$. Heraus: $I_3$, $I_4$. Knotensatz:
+\[
+  I_1 + I_2 + I_5 - I_3 - I_4 = 0
+  \quad\Rightarrow\quad
+  I_4 = I_1 + I_2 + I_5 - I_3 = 3 + (-1) + 0{,}5 - 2\ \si{A} = \ergebnis{\SI{0.5}{A}}
+\]
+Den negativen Wert von $I_2$ setzt man einfach \emph{mit} seinem Vorzeichen ein: In Wirklichkeit fließt dort $\SI{1}{A}$ aus dem Knoten heraus.
+\schritt{b) Netzwerk -- Knoten für Knoten}
+\leitfrage{Bei welchem Knoten ist nur \emph{ein} Strom unbekannt? Dort beginnen.}
+Knoten $K_1$: $I_\text{ein} - I_a - I_b = 0 \;\Rightarrow\; I_b = 6 - 4\ \si{A} = \ergebnis{\SI{2}{A}}$\\[2pt]
+Knoten $K_2$: Beide Pfeile ($I_a$ und $I_c$) zeigen hinein: $I_a + I_c = 0 \;\Rightarrow\; \ergebnis{I_c = \SI{-4}{A}}$\\
+\phantom{Knoten $K_2$:} Der Strom fließt in $R_3$ also tatsächlich von oben nach unten.\\[2pt]
+Knoten $K_4$: $I_b - I_d - I_e = 0 \;\Rightarrow\; I_e = 2 - 1{,}5\ \si{A} = \ergebnis{\SI{0.5}{A}}$\\[2pt]
+Knoten $K_3$: hinein $I_d$, heraus $I_c$ und $I_\text{aus}$:
+\[
+  I_d - I_c - I_\text{aus} = 0 \quad\Rightarrow\quad I_\text{aus} = 1{,}5 - (-4)\ \si{A} = \ergebnis{\SI{5.5}{A}}
+\]
+\schritt{c) Hüllfläche}
+Der Knotensatz gilt auch für eine geschlossene Fläche um einen ganzen Schaltungsteil. Sie wird nur von $I_\text{ein}$, $I_\text{aus}$ und $I_e$ durchstoßen:
+\[
+  I_\text{ein} - I_\text{aus} - I_e = 6 - 5{,}5 - 0{,}5\ \si{A} = 0 \;\checkmark
+\]
+\typfehler{Bei $K_3$ das Minuszeichen „doppelt“ vergessen: $I_c$ zeigt heraus \emph{und} ist negativ, also $-I_c = +\SI{4}{A}$. Das Vorzeichen in der Gleichung kommt vom \emph{Pfeil}, das Vorzeichen des Werts kommt beim Einsetzen hinzu.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Maschensatz und Potentiale}{13}
+In der Schaltung sind $U_0 = \SI{12}{V}$, $U_1 = \SI{5}{V}$ und $U_3 = \SI{-3}{V}$ bekannt. Die Zweipole $Z_1$ bis $Z_4$ sind nicht näher bekannt.
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[V, v<=$U_0$] (0,3)
+        to[R, l=$Z_1$, v=$U_1$, -*] (3,3)
+        to[R, l=$Z_3$, v<=$U_3$, -*] (6,3)
+        to[R, l=$Z_4$, v=$U_4$] (6,0) -- (0,0);
+  \draw (3,3) to[R, l=$Z_2$, v=$U_2$, -*] (3,0);
+  \draw (3,0) -- (3,-0.3) node[ground]{};
+  \node[above left] at (0,3) {A};
+  \node[above] at (3,3.05) {B};
+  \node[above right] at (6,3) {C};
+  \node[below left] at (3,-0.05) {0};
+\end{circuitikz}
+\end{center}
+\begin{teilaufgaben}
+  \item Zeichnen Sie zwei Maschen mit Umlaufrichtung ein und berechnen Sie $U_2$ und $U_4$.
+  \item Kontrollieren Sie das Ergebnis mit der äußeren Masche.
+  \item Der untere Knoten 0 ist der Bezugsknoten ($\varphi_0 = \SI{0}{V}$). Bestimmen Sie die Potentiale $\varphi_A$, $\varphi_B$ und $\varphi_C$.
+  \item Welche Spannung $U_{AC}$ zeigt ein Spannungsmesser zwischen A und C an?
+\end{teilaufgaben}
+\begin{tipp}Ein Spannungspfeil von Punkt X nach Punkt Y bedeutet $U = \varphi_X - \varphi_Y$.\end{tipp}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Zwei Maschen im Uhrzeigersinn}
+\leitfrage{Laufen Sie die linke Masche im Uhrzeigersinn ab (links hoch, oben nach rechts, durch $Z_2$ hinunter). Welche Pfeile zeigen in Umlaufrichtung?}
+Masche I (A--B--0--A): $U_0$ zeigt nach unten, also \emph{gegen} die Umlaufrichtung; $U_1$ und $U_2$ zeigen mit ihr.
+\[
+  -U_0 + U_1 + U_2 = 0 \quad\Rightarrow\quad U_2 = U_0 - U_1 = 12 - 5\ \si{V} = \ergebnis{\SI{7}{V}}
+\]
+Masche II (B--C--0--B): durch $Z_2$ hinauf (gegen $U_2$), oben nach rechts (gegen $U_3$, der nach links zeigt), durch $Z_4$ hinunter (mit $U_4$):
+\[
+  -U_2 - U_3 + U_4 = 0 \quad\Rightarrow\quad U_4 = U_2 + U_3 = 7 + (-3)\ \si{V} = \ergebnis{\SI{4}{V}}
+\]
+\schritt{b) Kontrolle: äußere Masche}
+A--B--C--0--A: $-U_0 + U_1 - U_3 + U_4 = -12 + 5 - (-3) + 4\ \si{V} = 0$ \checkmark
+\schritt{c) Potentiale}
+Wir gehen vom Bezugsknoten aus und nutzen $U = \varphi_X - \varphi_Y$:
+\begin{align*}
+  U_0 = \varphi_A - \varphi_0 &\Rightarrow \ergebnis{\varphi_A = \SI{12}{V}}\\
+  U_2 = \varphi_B - \varphi_0 &\Rightarrow \ergebnis{\varphi_B = \SI{7}{V}}\\
+  U_4 = \varphi_C - \varphi_0 &\Rightarrow \ergebnis{\varphi_C = \SI{4}{V}}
+\end{align*}
+Probe mit den übrigen Spannungen: $U_1 = \varphi_A - \varphi_B = \SI{5}{V}$ \checkmark, $U_3 = \varphi_C - \varphi_B = \SI{-3}{V}$ \checkmark
+\schritt{d) Spannung zwischen A und C}
+\[
+  U_{AC} = \varphi_A - \varphi_C = 12 - 4\ \si{V} = \ergebnis{\SI{8}{V}}
+\]
+Mit Potentialen braucht man dafür keinen Maschenumlauf mehr -- jede Spannung ist einfach eine Potentialdifferenz.
+\typfehler{Bei Masche II $+U_3$ statt $-U_3$ schreiben, weil man nur auf das Vorzeichen des \emph{Werts} achtet. Erst die Gleichung mit Pfeilrichtungen aufstellen, \emph{dann} Zahlen mit Vorzeichen einsetzen.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Netzwerk mit zwei Quellen}{25}
+Ein Ladegerät ($U_1 = \SI{20}{V}$, Innenwiderstand $R_1 = \SI{1}{\ohm}$) und ein Akku ($U_2 = \SI{6}{V}$, Innenwiderstand $R_2 = \SI{3}{\ohm}$) versorgen gemeinsam einen Verbraucher $R_3 = \SI{2}{\ohm}$.
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[V, v<=$U_1$] (0,3)
+        to[R, l=$R_1$, v_=$U_{R1}$] (2.6,3) to[short, i=$I_1$] (4,3);
+  \draw (8,0) to[V, v_<=$U_2$] (8,3)
+        to[R, l_=$R_2$, v^=$U_{R2}$] (5.4,3) to[short, i=$I_2$] (4,3);
+  \draw (4,3) to[R, l=$R_3$, v=$U_{R3}$, *-] (4,0.9) to[short, i=$I_3$, -*] (4,0);
+  \draw (0,0) -- (8,0);
+\end{circuitikz}
+\end{center}
+\begin{teilaufgaben}
+  \item Wie viele Knoten $k$ und Zweige $z$ hat die Schaltung? Wie viele unabhängige Knoten- und Maschengleichungen benötigen Sie, um alle Zweigströme zu bestimmen?
+  \item Stellen Sie die Knotengleichung und die Maschengleichungen auf. Verwenden Sie dabei das Ohmsche Gesetz, sodass nur noch $I_1$, $I_2$, $I_3$ als Unbekannte auftreten.
+  \item Lösen Sie das Gleichungssystem.
+  \item Interpretieren Sie das Vorzeichen von $I_2$. Was geschieht mit dem Akku?
+  \item Stellen Sie eine Leistungsbilanz für alle fünf Elemente auf.
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Knoten, Zweige, Gleichungen}
+Knoten: oben Mitte und unten -- also $k = 2$ (Verbindungsleitungen gehören zum Knoten). Zweige: links, Mitte, rechts -- also $z = 3$ mit den drei Unbekannten $I_1$, $I_2$, $I_3$.
+\[
+  \text{Knotengleichungen: } k - 1 = \ergebnis{1}, \qquad \text{Maschengleichungen: } z - (k-1) = \ergebnis{2}
+\]
+Die zweite Knotengleichung (unterer Knoten) wäre nur die erste mit umgekehrtem Vorzeichen -- sie liefert nichts Neues.
+\schritt{b) Gleichungen aufstellen}
+Oberer Knoten ($I_1$, $I_2$ hinein, $I_3$ heraus):
+\[
+  \text{(K)}\quad I_1 + I_2 - I_3 = 0
+\]
+\leitfrage{Linke Masche im Uhrzeigersinn: $U_1$ zeigt nach unten (gegen den Umlauf), $U_{R1}$ und $U_{R3}$ zeigen mit dem Umlauf.}
+\[
+  \text{(M1)}\quad -U_1 + R_1 I_1 + R_3 I_3 = 0
+\]
+Rechte Masche im Uhrzeigersinn (in $R_3$ hinauf, nach rechts durch $R_2$, in der Quelle hinunter): $U_{R3}$ und $U_{R2}$ zeigen gegen, $U_2$ mit dem Umlauf:
+\[
+  \text{(M2)}\quad -R_3 I_3 - R_2 I_2 + U_2 = 0
+\]
+\schritt{c) Lösen}
+Zahlen einsetzen und (K) als $I_3 = I_1 + I_2$ in (M1), (M2) einsetzen:
+\begin{align*}
+  \text{(M1)}:\quad & 1\cdot I_1 + 2\,(I_1 + I_2) = 20 \;\Rightarrow\; 3I_1 + 2I_2 = 20\\
+  \text{(M2)}:\quad & 3\cdot I_2 + 2\,(I_1 + I_2) = 6 \;\Rightarrow\; 2I_1 + 5I_2 = 6
+\end{align*}
+(Ströme in A.) Erste Gleichung $\cdot 2$ minus zweite Gleichung $\cdot 3$: $4I_2 - 15 I_2 = 40 - 18 \Rightarrow -11 I_2 = 22$.
+\[
+  \ergebnis{I_2 = \SI{-2}{A}}, \qquad I_1 = \frac{20 - 2\cdot(-2)}{3}\ \si{A} = \ergebnis{\SI{8}{A}}, \qquad I_3 = I_1 + I_2 = \ergebnis{\SI{6}{A}}
+\]
+Probe (äußere Masche): $-U_1 + R_1 I_1 - R_2 I_2 + U_2 = -20 + 8 + 6 + 6 = 0$ \checkmark
+\schritt{d) Interpretation}
+$I_2 < 0$: Der Strom fließt entgegen dem Pfeil, also im Akku von oben ($+$) nach unten. Der Strom fließt in den Pluspol hinein -- der Akku wird mit $\SI{2}{A}$ \emph{geladen}.
+\schritt{e) Leistungsbilanz}
+Quellen (EZS, $P > 0$ heißt Abgabe): $P_{U1} = U_1 I_1 = \SI{160}{W}$ (gibt ab), $P_{U2} = U_2 I_2 = \SI{-12}{W}$ (nimmt $\SI{12}{W}$ auf).\\
+Widerstände (VZS): $P_{R1} = I_1^2 R_1 = \SI{64}{W}$, $P_{R2} = I_2^2 R_2 = \SI{12}{W}$, $P_{R3} = I_3^2 R_3 = \SI{72}{W}$.
+\[
+  \underbrace{\SI{160}{W}}_\text{abgegeben} = \underbrace{64 + 12 + 72 + 12\ \si{W}}_\text{aufgenommen} = \SI{160}{W} \;\checkmark
+\]
+\typfehler{Beide Knotengleichungen verwenden und dann eine Maschengleichung „vermissen“. Bei einem negativen Ergebnis den Pfeil nachträglich umdrehen und weiterrechnen, ohne das Vorzeichen zu ändern -- lassen Sie die Pfeile stehen und rechnen Sie mit dem negativen Wert weiter.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Richtig oder falsch?}{7}
+Entscheiden Sie und begründen Sie in einem Satz.
+\begin{teilaufgaben}
+  \item Ein Netzwerk mit $k$ Knoten liefert $k$ unabhängige Knotengleichungen.
+  \item Die Spannung zwischen zwei Punkten hängt davon ab, über welchen Weg (welche Masche) man sie berechnet.
+  \item Das Vorzeichen eines berechneten Stroms hängt von der Wahl des Zählpfeils ab, der physikalische Strom aber nicht.
+  \item Wählt man einen anderen Knoten als Bezugsknoten, ändern sich alle Potentiale, aber keine einzige Spannung.
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{Antworten}
+\begin{teilaufgaben}
+  \item \textbf{Falsch.} Nur $k-1$ Gleichungen sind unabhängig; die letzte folgt aus der Summe aller anderen.
+  \item \textbf{Falsch.} Genau das sagt der Maschensatz: Die Summe über jeden geschlossenen Umlauf ist null, also liefern alle Wege dieselbe Spannung.
+  \item \textbf{Richtig.} Ein umgedrehter Pfeil kehrt nur das Vorzeichen des Zahlenwerts um.
+  \item \textbf{Richtig.} Alle Potentiale verschieben sich um denselben Betrag; Spannungen sind Potential\emph{differenzen}, der Betrag hebt sich heraus.
+\end{teilaufgaben}
+\end{loesung}
+
+\end{document}

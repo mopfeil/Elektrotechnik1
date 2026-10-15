@@ -1,0 +1,228 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{get-uebung}
+
+% Knotennummer im Kreis: \knoten{(x,y)}{Nr}
+\newcommand{\knoten}[2]{\node[draw,circle,inner sep=1pt,font=\scriptsize,hsublau] at #1 {#2};}
+
+\blatt{11}{Knotenpotentialverfahren}{Kap.~2.14}
+
+\begin{document}
+
+\blattkopf{
+  \item das Kochrezept des Knotenpotentialverfahrens Schritt für Schritt anwenden,
+  \item reale Spannungsquellen in reale Stromquellen umwandeln und Widerstände als Leitwerte schreiben,
+  \item Leitwertmatrix und rechte Seite direkt aus der Schaltung ablesen,
+  \item ein $2\times2$-Gleichungssystem von Hand lösen und daraus alle Zweigströme bestimmen,
+  \item ideale Spannungsquellen durch Verschieben durch einen Knoten behandeln.
+}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Gleichungssystem direkt aufstellen}{15}
+Die Knoten der Schaltung sind bereits nummeriert, Knoten \textcircled{\scriptsize 0} ist der Bezugsknoten.
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[I, i=$I_1$] (0,3) -- (2,3);
+  \draw (2,3) to[R, l_=$G_1$, *-*] (2,0);
+  \draw (2,3) to[R, l=$G_2$] (5,3);
+  \draw (5,3) to[R, l=$G_3$, *-*] (5,0);
+  \draw (5,3) to[R, l=$G_4$, *-] (8,3);
+  \draw (8,3) to[R, l=$G_5$, *-*] (8,0);
+  \draw (2,3) -- (2,5.4) to[R, l=$G_6$] (8,5.4) -- (8,3);
+  \draw (8,4.2) to[I, i^=$I_2$, *-] (5,4.2) -- (5,3);
+  \draw (0,0) -- (8,0);
+  \knoten{(1.6,3.4)}{1}
+  \knoten{(4.6,3.4)}{2}
+  \knoten{(8.45,3.4)}{3}
+  \knoten{(4.6,-0.4)}{0}
+\end{circuitikz}
+\end{center}
+\begin{teilaufgaben}
+  \item Stellen Sie mit dem Kochrezept das Gleichungssystem $\mathbf{G}\cdot\vec{U} = \vec{I}$ für die Knotenpotentiale $U_{10}$, $U_{20}$, $U_{30}$ auf. (Nicht lösen!)
+  \item Die Leitwertmatrix ist symmetrisch. Woran liegt das?
+  \item Leiten Sie die erste Zeile des Gleichungssystems zur Kontrolle mit dem Knotensatz an Knoten \textcircled{\scriptsize 1} her.
+  \item Wie ändert sich das Gleichungssystem, wenn die Stromquelle $I_2$ umgedreht wird? Und wie, wenn $G_6$ entfernt wird?
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{Vorbereitung}
+Knoten sind nummeriert, es gibt keine Spannungsquellen, alle Elemente sind schon Leitwerte -- wir können sofort aufstellen.
+\schritt{a) Leitwertmatrix}
+\leitfrage{Welche Leitwerte sind direkt mit Knoten 1 verbunden? Welche verbinden Knoten 1 direkt mit Knoten 2 bzw.\ 3?}
+\begin{itemize}[nosep]
+  \item Hauptdiagonale $G_{ii}$: Summe \emph{aller} Leitwerte am Knoten $i$:\\
+        $G_{11} = G_1+G_2+G_6$, \quad $G_{22} = G_2+G_3+G_4$, \quad $G_{33} = G_4+G_5+G_6$
+  \item Nebenelemente $G_{ij}$: \emph{negative} Summe der Leitwerte zwischen $i$ und $j$:\\
+        $G_{12} = G_{21} = -G_2$, \quad $G_{13} = G_{31} = -G_6$, \quad $G_{23} = G_{32} = -G_4$
+\end{itemize}
+\schritt{a) Rechte Seite}
+Quellenströme \emph{in} den Knoten positiv, \emph{heraus} negativ: $I_1$ fließt in Knoten 1; $I_2$ fließt aus Knoten 3 heraus und in Knoten 2 hinein.
+\[
+  \begin{pmatrix}
+    G_1+G_2+G_6 & -G_2 & -G_6\\
+    -G_2 & G_2+G_3+G_4 & -G_4\\
+    -G_6 & -G_4 & G_4+G_5+G_6
+  \end{pmatrix}
+  \cdot
+  \begin{pmatrix} U_{10}\\ U_{20}\\ U_{30}\end{pmatrix}
+  = \ergebnis{\begin{pmatrix} I_1\\ I_2\\ -I_2\end{pmatrix}}
+\]
+\schritt{b) Symmetrie}
+Ein Leitwert zwischen den Knoten $i$ und $j$ verbindet $j$ genauso mit $i$. Deshalb ist $G_{ij} = G_{ji}$. Ideale Stromquellen tauchen nie in der Matrix auf, nur auf der rechten Seite.
+\schritt{c) Kontrolle mit dem Knotensatz}
+Ströme, die Knoten 1 über die Leitwerte verlassen, sind gleich dem zufließenden Quellenstrom:
+\[
+  G_1U_{10} + G_2(U_{10}-U_{20}) + G_6(U_{10}-U_{30}) = I_1
+  \;\Leftrightarrow\; (G_1+G_2+G_6)U_{10} - G_2U_{20} - G_6U_{30} = I_1 \;\checkmark
+\]
+\schritt{d) Änderungen}
+$I_2$ umgedreht: Nur die rechte Seite ändert sich zu $(I_1,\,-I_2,\,+I_2)^T$, die Matrix bleibt.\\
+$G_6$ entfernt: $G_6$ verschwindet aus $G_{11}$ und $G_{33}$, und $G_{13} = G_{31} = 0$.
+\typfehler{Nebenelemente mit positivem Vorzeichen eintragen. Die Leitwerte der Stromquellenzweige in die Matrix aufnehmen. Beim Quellenstrom zwischen zwei Knoten nur einen der beiden Knoten berücksichtigen -- $I_2$ taucht immer in zwei Zeilen mit entgegengesetztem Vorzeichen auf.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Knotenpotentialverfahren mit Zahlen}{22}
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[V, v<=$U_1$] (0,3) to[R, l=$R_1$] (3,3);
+  \draw (3,3) to[R, l_=$R_2$, *-*] (3,0);
+  \draw (3,3) to[R, l=$R_3$] (6,3);
+  \draw (6,3) to[R, l_=$R_4$, *-*] (6,0);
+  \draw (6,3) -- (8,3); \draw (8,0) to[I, i=$I_q$] (8,3); \draw (8,0) -- (0,0);
+\end{circuitikz}
+\end{center}
+\gegeben{$U_1 = \SI{10}{V}$, $I_q = \SI{1.5}{A}$, $R_1 = \SI{2}{\ohm}$, $R_2 = \SI{4}{\ohm}$, $R_3 = \SI{4}{\ohm}$, $R_4 = \SI{2}{\ohm}$}
+\begin{teilaufgaben}
+  \item Nummerieren Sie die Knoten (Bezugsknoten unten) und wandeln Sie die reale Spannungsquelle ($U_1$, $R_1$) in eine reale Stromquelle um. Zeichnen Sie die umgewandelte Schaltung mit Leitwerten.
+  \item Stellen Sie das Gleichungssystem für die Knotenpotentiale auf.
+  \item Lösen Sie das Gleichungssystem von Hand (z.\,B.\ mit der Cramerschen Regel).
+  \item Berechnen Sie die Ströme durch alle vier Widerstände der \emph{Originalschaltung} und prüfen Sie den Knotensatz an beiden Knoten.
+\end{teilaufgaben}
+\begin{tipp}Für $\begin{pmatrix}a&b\\c&d\end{pmatrix}\vec{x} = \begin{pmatrix}e\\f\end{pmatrix}$ gilt $x_1 = \dfrac{ed-bf}{ad-bc}$, $x_2 = \dfrac{af-ec}{ad-bc}$.\end{tipp}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Vorbereitung}
+Knoten \textcircled{\scriptsize 1}: oberer Anschluss von $R_2$; Knoten \textcircled{\scriptsize 2}: oberer Anschluss von $R_4$; Knoten \textcircled{\scriptsize 0}: unten.\\
+Quellenumwandlung (Innenwiderstand bleibt, Pfeil der Stromquelle zeigt zum Knoten 1):
+\[
+  I_{q1} = \frac{U_1}{R_1} = \frac{\SI{10}{V}}{\SI{2}{\ohm}} = \SI{5}{A}, \qquad G_1 = \frac{1}{R_1} = \SI{0.5}{S}
+\]
+Leitwerte: $G_2 = \SI{0.25}{S}$, $G_3 = \SI{0.25}{S}$, $G_4 = \SI{0.5}{S}$.
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[I, i=$I_{q1}$] (0,3) -- (3,3);
+  \draw (1.5,3) to[R, l_=$G_1$, *-*] (1.5,0);
+  \draw (3,3) to[R, l=$G_2$, *-*] (3,0);
+  \draw (3,3) to[R, l=$G_3$] (6,3);
+  \draw (6,3) to[R, l_=$G_4$, *-*] (6,0);
+  \draw (6,3) -- (8,3); \draw (8,0) to[I, i=$I_q$] (8,3); \draw (8,0) -- (0,0);
+  \knoten{(3,3.45)}{1}
+  \knoten{(6,3.45)}{2}
+  \knoten{(4.5,-0.4)}{0}
+\end{circuitikz}
+\end{center}
+\schritt{b) Gleichungssystem}
+\[
+  \begin{pmatrix} G_1+G_2+G_3 & -G_3\\ -G_3 & G_3+G_4\end{pmatrix}
+  \begin{pmatrix} U_{10}\\U_{20}\end{pmatrix}
+  = \begin{pmatrix} I_{q1}\\ I_q\end{pmatrix}
+  \quad\Rightarrow\quad
+  \begin{pmatrix} 1 & -0{,}25\\ -0{,}25 & 0{,}75\end{pmatrix}\si{S}
+  \begin{pmatrix} U_{10}\\U_{20}\end{pmatrix}
+  = \begin{pmatrix} 5\\ 1{,}5\end{pmatrix}\si{A}
+\]
+\schritt{c) Lösen}
+Determinante: $D = 1\cdot 0{,}75 - (-0{,}25)^2 = 0{,}6875\ \si{S^2}$.
+\[
+  U_{10} = \frac{5\cdot 0{,}75 - (-0{,}25)\cdot 1{,}5}{0{,}6875}\,\si{V} = \frac{4{,}125}{0{,}6875}\,\si{V} = \ergebnis{\SI{6}{V}}
+\]
+\[
+  U_{20} = \frac{1\cdot 1{,}5 - 5\cdot(-0{,}25)}{0{,}6875}\,\si{V} = \frac{2{,}75}{0{,}6875}\,\si{V} = \ergebnis{\SI{4}{V}}
+\]
+\schritt{d) Zweigströme in der Originalschaltung}
+\leitfrage{Darf man den Strom durch $R_1$ als $G_1\cdot U_{10}$ berechnen?}
+Nein! Durch $G_1$ in der umgewandelten Schaltung fließt ein anderer Strom als durch $R_1$ in der Originalschaltung. In der Originalschaltung liegt an $R_1$ die Spannung $U_1 - U_{10}$:
+\begin{align*}
+  I_{R1} &= \frac{U_1-U_{10}}{R_1} = \frac{\SI{4}{V}}{\SI{2}{\ohm}} = \ergebnis{\SI{2}{A}} \text{ (zu Knoten 1)}, &
+  I_{R2} &= \frac{U_{10}}{R_2} = \ergebnis{\SI{1.5}{A}},\\
+  I_{R3} &= \frac{U_{10}-U_{20}}{R_3} = \ergebnis{\SI{0.5}{A}} \text{ (von 1 nach 2)}, &
+  I_{R4} &= \frac{U_{20}}{R_4} = \ergebnis{\SI{2}{A}}.
+\end{align*}
+Knoten 1: $\SI{2}{A} = \SI{1.5}{A} + \SI{0.5}{A}$ \checkmark \qquad Knoten 2: $\SI{0.5}{A} + \SI{1.5}{A} = \SI{2}{A}$ \checkmark\\
+(Zum Vergleich: In der umgewandelten Schaltung fließen $G_1U_{10} = \SI{3}{A}$ durch $G_1$, und $\SI{5}{A}-\SI{3}{A} = \SI{2}{A}$ in den Knoten -- an den Klemmen verhalten sich beide Quellen gleich, intern nicht.)
+\typfehler{Die umgewandelte Stromquelle mit falscher Richtung einzeichnen (ihr Pfeil zeigt dorthin, wo der Pluspol der Spannungsquelle war). Den Strom durch $R_1$ aus der umgewandelten Schaltung ablesen.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Ideale Spannungsquelle}{20}
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[V, v<=$U$] (0,4) -- (6,4);
+  \draw (2,4) to[R, l_=$R_1$, *-*] (2,2) to[R, l_=$R_2$, -*] (2,0);
+  \draw (6,4) to[R, l=$R_3$] (6,2) to[R, l=$R_4$, *-] (6,0) -- (0,0);
+  \draw (2,2) to[R, l=$R_5$] (6,2);
+  \knoten{(1.5,2.4)}{1}
+  \knoten{(6.5,2.4)}{2}
+  \knoten{(4,4.4)}{3}
+  \knoten{(4,-0.4)}{0}
+\end{circuitikz}
+\end{center}
+\gegeben{$U = \SI{12}{V}$, $R_1 = R_4 = \SI{2}{\ohm}$, $R_2 = R_3 = R_5 = \SI{4}{\ohm}$}
+\begin{teilaufgaben}
+  \item Warum lässt sich das Kochrezept hier nicht direkt anwenden?
+  \item Verschieben Sie die ideale Spannungsquelle durch den Knoten \textcircled{\scriptsize 3} in die Zweige von $R_1$ und $R_3$. Zeichnen Sie die neue Schaltung. Was passiert mit Knoten \textcircled{\scriptsize 3}?
+  \item Stellen Sie das Gleichungssystem für $U_{10}$ und $U_{20}$ auf und lösen Sie es.
+  \item Berechnen Sie den Strom, den die Spannungsquelle abgibt.
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Problem}
+Eine \emph{ideale} Spannungsquelle hat keinen Innenwiderstand. Man kann sie deshalb nicht in eine Stromquelle umwandeln ($I_k = U/0 \to \infty$).
+\schritt{b) Quelle verschieben}
+\leitfrage{Welche Spannung liegt zwischen Knoten 3 und den oberen Enden von $R_1$ und $R_3$?}
+Wir schieben die Quelle durch Knoten 3 hindurch und setzen je eine Kopie in Reihe zu $R_1$ und zu $R_3$ (Skript Abb.~2.7). Die oberen Enden von $R_1$ und $R_3$ liegen weiterhin um $U$ über dem Bezugsknoten, an den Spannungen ändert sich nichts.
+Knoten 3 liegt jetzt auf \SI{0}{V} und fällt mit dem Bezugsknoten zusammen:
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[V, v<=$U$] (0,2) to[R, l=$R_1$] (2,2);
+  \draw (2,2) to[R, l_=$R_2$, *-*] (2,0);
+  \draw (2,2) to[R, l=$R_5$] (6,2);
+  \draw (6,2) to[R, l=$R_4$, *-*] (6,0);
+  \draw (8,0) to[V, v_<=$U$] (8,2) to[R, l_=$R_3$] (6,2);
+  \draw (0,0) -- (8,0);
+  \knoten{(2,2.45)}{1}
+  \knoten{(6,2.45)}{2}
+  \knoten{(4,-0.4)}{0}
+\end{circuitikz}
+\end{center}
+Jetzt sind ($U$, $R_1$) und ($U$, $R_3$) reale Spannungsquellen und lassen sich umwandeln:
+$\;U/R_1 = \SI{6}{A}$ parallel zu $G_1 = \SI{0.5}{S}$ in Knoten 1, $\;U/R_3 = \SI{3}{A}$ parallel zu $G_3 = \SI{0.25}{S}$ in Knoten 2.
+\schritt{c) Gleichungssystem und Lösung}
+Mit $G_2 = G_5 = \SI{0.25}{S}$, $G_4 = \SI{0.5}{S}$:
+\[
+  \begin{pmatrix} G_1+G_2+G_5 & -G_5\\ -G_5 & G_3+G_4+G_5\end{pmatrix}
+  \begin{pmatrix} U_{10}\\U_{20}\end{pmatrix}
+  = \begin{pmatrix} UG_1\\ UG_3\end{pmatrix}
+  \;\Rightarrow\;
+  \begin{pmatrix} 1 & -0{,}25\\ -0{,}25 & 1\end{pmatrix}\si{S}
+  \begin{pmatrix} U_{10}\\U_{20}\end{pmatrix}
+  = \begin{pmatrix} 6\\ 3\end{pmatrix}\si{A}
+\]
+$D = 1 - 0{,}0625 = 0{,}9375\ \si{S^2}$:
+\[
+  U_{10} = \frac{6\cdot 1 + 0{,}25\cdot 3}{0{,}9375}\,\si{V} = \ergebnis{\SI{7.2}{V}},\qquad
+  U_{20} = \frac{1\cdot 3 + 6\cdot 0{,}25}{0{,}9375}\,\si{V} = \ergebnis{\SI{4.8}{V}}
+\]
+\schritt{d) Quellenstrom}
+Zurück in der \emph{Originalschaltung}: Die Quelle speist die Zweige $R_1$ und $R_3$, Knoten 3 liegt auf $U = \SI{12}{V}$:
+\[
+  I_U = \frac{U-U_{10}}{R_1} + \frac{U-U_{20}}{R_3} = \frac{\SI{4.8}{V}}{\SI{2}{\ohm}} + \frac{\SI{7.2}{V}}{\SI{4}{\ohm}} = \SI{2.4}{A}+\SI{1.8}{A} = \ergebnis{\SI{4.2}{A}}
+\]
+Kontrolle Knoten 1: zu $\SI{2.4}{A}$, ab $U_{10}/R_2 + (U_{10}-U_{20})/R_5 = \SI{1.8}{A}+\SI{0.6}{A}$ \checkmark
+\typfehler{Die Quelle nur in \emph{einen} der Zweige verschieben -- sie muss in \emph{jeden} Zweig, der am Knoten hängt. Vergessen, dass Knoten 3 nach dem Verschieben mit dem Bezugsknoten zusammenfällt, und ihn weiter als Unbekannte führen.}
+\end{loesung}
+
+\end{document}

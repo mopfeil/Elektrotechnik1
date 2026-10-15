@@ -1,0 +1,217 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{get-uebung}
+
+\blatt{1}{Ladung, Strom, Spannung, Leistung und Wirkungsgrad}{Kap.~1.1--1.5}
+
+\begin{document}
+
+\blattkopf{
+  \item Ladung, Strom und Energie über $i = \mathrm{d}q/\mathrm{d}t$, $u = \mathrm{d}w/\mathrm{d}q$ und $p = u\cdot i$ ineinander umrechnen,
+  \item das Ohmsche Gesetz und die Leistungsformeln $P = U I = I^2 R = U^2/R$ sicher anwenden,
+  \item den Wirkungsgrad einzelner Geräte und ganzer Energieketten berechnen,
+  \item mit Verbraucher- und Erzeugerzählpfeilsystem entscheiden, ob ein Element Leistung aufnimmt oder abgibt.
+}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Ladung und Strom im Smartphone-Akku}{12}
+Auf einem Smartphone-Akku ist die Kapazität mit $\SI{4000}{mAh}$ angegeben.
+\begin{teilaufgaben}
+  \item Welche Ladungsmenge $Q$ in Coulomb entspricht das?
+  \item Wie viele Elektronen sind das? ($e = \SI{1.6022e-19}{C}$)
+  \item Der leere Akku wird mit einem konstanten Strom $I = \SI{2}{A}$ geladen. Wie lange dauert das vollständige Laden?
+  \item Ein Schnellladegerät beginnt mit $i(0) = \SI{3}{A}$; der Strom nimmt dann linear ab und erreicht nach $t_1 = \SI{1}{h}$ den Wert null.
+        Skizzieren Sie $i(t)$ und berechnen Sie die übertragene Ladung. Ist der Akku danach voll?
+\end{teilaufgaben}
+\begin{tipp}$\SI{1}{Ah}$ ist ein Strom von $\SI{1}{A}$, der eine Stunde lang fließt. Bei zeitabhängigem Strom gilt $q = \int i(t)\,\mathrm{d}t$ -- also die Fläche unter der Kurve.\end{tipp}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Einheit umrechnen}
+\leitfrage{Was bedeutet die Einheit „Amperestunde“? Aus $i = \mathrm{d}q/\mathrm{d}t$ folgt bei konstantem Strom $Q = I\cdot t$.}
+Also ist $\SI{1}{Ah} = \SI{1}{A}\cdot\SI{3600}{s} = \SI{3600}{As} = \SI{3600}{C}$:
+\[
+  Q = \SI{4}{Ah} = 4 \cdot \SI{3600}{C} = \ergebnis{\SI{14400}{C}}
+\]
+\schritt{b) Anzahl der Elektronen}
+Jedes Elektron trägt die Elementarladung $e$, also
+\[
+  N = \frac{Q}{e} = \frac{\SI{14400}{C}}{\SI{1.6022e-19}{C}} \approx \ergebnis{\num{8.99e22}}
+\]
+\schritt{c) Ladedauer bei konstantem Strom}
+\[
+  t = \frac{Q}{I} = \frac{\SI{14400}{C}}{\SI{2}{A}} = \SI{7200}{s} = \ergebnis{\SI{2}{h}}
+\]
+\schritt{d) Zeitabhängiger Strom}
+Die Skizze ist eine Gerade von $\SI{3}{A}$ bei $t=0$ auf $\SI{0}{A}$ bei $t = \SI{1}{h}$. Die Ladung ist die Fläche unter $i(t)$, hier ein Dreieck:
+\[
+  Q_1 = \int_0^{t_1} i(t)\,\mathrm{d}t = \tfrac12 \cdot \SI{3}{A}\cdot\SI{3600}{s} = \SI{5400}{C} = \SI{1.5}{Ah}
+\]
+Der Akku ist damit nur zu $\SI{1.5}{Ah}/\SI{4}{Ah} \approx \SI{38}{\percent}$ geladen, also \emph{nicht} voll.
+\typfehler{mAh nicht in Ah umgerechnet (Faktor 1000) oder Stunden nicht in Sekunden umgerechnet (Faktor 3600). Bei d) wird oft $Q = I\cdot t$ mit dem Anfangsstrom gerechnet -- das gilt nur für \emph{konstanten} Strom.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Ohmsches Gesetz und Leistung am Wasserkocher}{18}
+Ein Wasserkocher hat das Typenschild „$\SI{230}{V}$, $\SI{2000}{W}$“. Das Heizelement ist ein ohmscher Widerstand, dessen Temperaturabhängigkeit hier vernachlässigt wird.
+\begin{teilaufgaben}
+  \item Berechnen Sie den Strom $I$ und den Widerstand $R$ des Heizelements im Nennbetrieb.
+  \item Es soll $\SI{1}{l}$ Wasser ($m = \SI{1}{kg}$) von $\SI{20}{\celsius}$ auf $\SI{100}{\celsius}$ erwärmt werden. Dafür ist die Wärmeenergie
+        $Q_\text{W} = c\cdot m\cdot\Delta\vartheta$ mit $c = \SI{4186}{J/(kg.K)}$ nötig. Der Wirkungsgrad des Wasserkochers beträgt $\eta = \SI{90}{\percent}$.
+        Welche elektrische Energie $W_\text{el}$ muss aufgewendet werden?
+  \item Wie lange dauert der Vorgang?
+  \item Was kostet das Erwärmen bei einem Strompreis von $\SI{0.35}{\EUR/kWh}$?
+  \item Die Netzspannung sinkt auf $\SI{207}{V}$ ($\SI{-10}{\percent}$). Welche Leistung nimmt der Wasserkocher jetzt auf? Um wie viel Prozent ist sie gesunken? Erklären Sie, warum die Leistung stärker sinkt als die Spannung.
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Strom und Widerstand}
+\leitfrage{Welche Formel verknüpft die gegebenen Größen $U$ und $P$ direkt mit $I$ bzw.\ $R$?}
+\[
+  I = \frac{P}{U} = \frac{\SI{2000}{W}}{\SI{230}{V}} \approx \ergebnis{\SI{8.70}{A}}, \qquad
+  R = \frac{U^2}{P} = \frac{(\SI{230}{V})^2}{\SI{2000}{W}} = \ergebnis{\SI{26.45}{\ohm}}
+\]
+Kontrolle mit dem Ohmschen Gesetz: $R = U/I = \SI{230}{V}/\SI{8.696}{A} = \SI{26.45}{\ohm}$ \checkmark
+\schritt{b) Benötigte elektrische Energie}
+Nutzbare Energie (Wärme im Wasser):
+\[
+  Q_\text{W} = \SI{4186}{\frac{J}{kg\,K}} \cdot \SI{1}{kg}\cdot \SI{80}{K} = \SI{334880}{J}
+\]
+\leitfrage{Ist $Q_\text{W}$ die Eingangs- oder die Ausgangsenergie des Wasserkochers?}
+Es ist die \emph{nutzbare} Ausgangsenergie. Aus $\eta = W_\text{aus}/W_\text{ein}$ folgt
+\[
+  W_\text{el} = \frac{Q_\text{W}}{\eta} = \frac{\SI{334880}{J}}{0{,}9} \approx \ergebnis{\SI{372.1}{kJ}}
+\]
+\schritt{c) Dauer}
+Bei konstanter Leistung gilt $W = P\cdot t$:
+\[
+  t = \frac{W_\text{el}}{P} = \frac{\SI{372089}{J}}{\SI{2000}{W}} \approx \SI{186}{s} \approx \ergebnis{\SI{3.1}{min}}
+\]
+\schritt{d) Kosten}
+$\SI{1}{kWh} = \SI{1000}{W}\cdot\SI{3600}{s} = \SI{3.6e6}{J}$, also
+\[
+  W_\text{el} = \frac{\SI{372089}{J}}{\SI{3.6e6}{J/kWh}} \approx \SI{0.1034}{kWh}
+  \quad\Rightarrow\quad \text{Kosten} \approx \SI{0.1034}{kWh}\cdot\SI{0.35}{\EUR/kWh} \approx \ergebnis{3{,}6\ \text{Cent}}
+\]
+\schritt{e) Unterspannung}
+\leitfrage{Welche Größe des Wasserkochers bleibt konstant, wenn sich die Spannung ändert -- $P$, $I$ oder $R$?}
+Der Widerstand $R$ bleibt gleich. Deshalb
+\[
+  P' = \frac{U'^2}{R} = \frac{(\SI{207}{V})^2}{\SI{26.45}{\ohm}} = \ergebnis{\SI{1620}{W}}
+  \qquad\Rightarrow\qquad \frac{P'}{P} = 0{,}81 \;\hat{=}\; \SI{-19}{\percent}
+\]
+Die Leistung hängt quadratisch von der Spannung ab: $P'/P = (U'/U)^2 = 0{,}9^2 = 0{,}81$. Mit der Spannung sinkt nämlich auch der Strom -- beide Faktoren in $P = U\cdot I$ werden um $\SI{10}{\percent}$ kleiner.
+\typfehler{Mit konstanter Leistung $P = \SI{2000}{W}$ weiterrechnen -- die Typenschild-Leistung gilt nur bei Nennspannung! Bei b) $\eta$ falsch herum angewendet ($W_\text{el} = \eta\cdot Q_\text{W}$): Die zugeführte Energie muss immer \emph{größer} sein als die nutzbare.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Wirkungsgrad einer Energiekette}{13}
+Eine Inselanlage versorgt eine Hütte. Die Leistung des Solarmoduls wird über einen Laderegler ($\eta_1 = \SI{95}{\percent}$) in einen Akku geleitet. Laden und Entladen des Akkus haben zusammen den Wirkungsgrad $\eta_2 = \SI{90}{\percent}$. Ein Wechselrichter ($\eta_3 = \SI{93}{\percent}$) erzeugt daraus die Netzspannung für die Verbraucher.
+\begin{center}
+\begin{tikzpicture}[blk/.style={draw,rounded corners,minimum width=2.7cm,minimum height=0.9cm,align=center,font=\small},>=Latex]
+  \node[blk] (a) {Laderegler\\$\eta_1$};
+  \node[blk,right=1.2cm of a] (b) {Akku\\$\eta_2$};
+  \node[blk,right=1.2cm of b] (c) {Wechselrichter\\$\eta_3$};
+  \draw[->] ($(a.west)-(1.2,0)$) -- node[above,font=\small]{$P_\text{ein}$} (a);
+  \draw[->] (a) -- (b); \draw[->] (b) -- (c);
+  \draw[->] (c.east) -- node[above,font=\small]{$P_\text{aus}$} ++(1.2,0);
+\end{tikzpicture}
+\end{center}
+\begin{teilaufgaben}
+  \item Leiten Sie den Gesamtwirkungsgrad $\eta_\text{ges}$ der Kette allgemein her und berechnen Sie ihn.
+  \item Das Modul liefert $P_\text{ein} = \SI{500}{W}$. Welche Leistung steht den Verbrauchern zur Verfügung, und wie groß ist die gesamte Verlustleistung?
+  \item Abends sollen Verbraucher mit zusammen $\SI{300}{W}$ betrieben werden. Welche Leistung muss dafür in die Kette hineingegeben werden?
+  \item Ein Gleichstrommotor in der Hütte nimmt bei $U = \SI{24}{V}$ den Strom $I = \SI{5}{A}$ auf und gibt eine mechanische Leistung von $\SI{100}{W}$ ab. Berechnen Sie seinen Wirkungsgrad und die Verlustleistung. Was passiert mit dieser Verlustleistung?
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Gesamtwirkungsgrad herleiten}
+\leitfrage{Die Ausgangsleistung einer Stufe ist die Eingangsleistung der nächsten. Wie sieht das als Formelkette aus?}
+Mit den Zwischenleistungen $P_1$ (nach dem Laderegler) und $P_2$ (nach dem Akku):
+\[
+  \eta_\text{ges} = \frac{P_\text{aus}}{P_\text{ein}}
+  = \frac{P_1}{P_\text{ein}}\cdot\frac{P_2}{P_1}\cdot\frac{P_\text{aus}}{P_2}
+  = \eta_1\cdot\eta_2\cdot\eta_3
+  = 0{,}95\cdot 0{,}90\cdot 0{,}93 \approx \ergebnis{0{,}795 = \SI{79.5}{\percent}}
+\]
+Die Wirkungsgrade werden \emph{multipliziert}. Der Gesamtwirkungsgrad ist immer kleiner als der schlechteste Einzelwirkungsgrad.
+\schritt{b) Ausgangs- und Verlustleistung}
+\[
+  P_\text{aus} = \eta_\text{ges}\cdot P_\text{ein} = 0{,}795\cdot\SI{500}{W} \approx \ergebnis{\SI{398}{W}},
+  \qquad P_\text{V} = P_\text{ein}-P_\text{aus} \approx \ergebnis{\SI{102}{W}}
+\]
+\schritt{c) Benötigte Eingangsleistung}
+\[
+  P_\text{ein} = \frac{P_\text{aus}}{\eta_\text{ges}} = \frac{\SI{300}{W}}{0{,}795} \approx \ergebnis{\SI{377}{W}}
+\]
+\schritt{d) Motor}
+Elektrische Eingangsleistung: $P_\text{ein} = U\cdot I = \SI{24}{V}\cdot\SI{5}{A} = \SI{120}{W}$.
+\[
+  \eta = \frac{P_\text{mech}}{P_\text{el}} = \frac{\SI{100}{W}}{\SI{120}{W}} \approx \ergebnis{\SI{83.3}{\percent}},
+  \qquad P_\text{V} = \ergebnis{\SI{20}{W}}
+\]
+Die Verlustleistung wird in Wärme umgesetzt (Wicklungswiderstand, Reibung in den Lagern, Ummagnetisierung im Eisen). Der Motor erwärmt sich.
+\typfehler{Wirkungsgrade addieren oder mitteln statt multiplizieren. Prozentangaben direkt als Zahlen verwenden ($95\cdot 90\cdot 93$) -- rechnen Sie mit Dezimalbrüchen.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Zählpfeile und Leistungsbilanz}{15}
+In der Schaltung lädt ein Netzteil ($U_1 = \SI{12}{V}$) über einen Vorwiderstand $R = \SI{2}{\ohm}$ einen Akku mit der Klemmenspannung $U_2 = \SI{8}{V}$. Gemessen wird der Strom $I = \SI{2}{A}$.
+Die Zählpfeile in der Schaltung wurden \emph{absichtlich} uneinheitlich eingezeichnet.
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[V, v<=$U_1$, i=$I_1$] (0,3)
+        to[R, l=$R$, i=$I$, v<=$U_R$] (4,3)
+        to[V, v^=$U_2$, i<=$I_3$] (4,0) -- (0,0);
+  \node[font=\small] at (0,-0.45) {Netzteil};
+  \node[font=\small] at (4,-0.45) {Akku};
+\end{circuitikz}
+\end{center}
+\begin{teilaufgaben}
+  \item Geben Sie die Werte von $I_1$ und $I_3$ mit Vorzeichen an.
+  \item Entscheiden Sie für jedes der drei Elemente, ob Strom- und Spannungspfeil im Verbraucher- (VZS) oder im Erzeugerzählpfeilsystem (EZS) stehen.
+  \item Berechnen Sie $U_R$ mit Vorzeichen.
+  \item Berechnen Sie für jedes Element die Leistung und geben Sie an, ob es Leistung aufnimmt oder abgibt.
+  \item Prüfen Sie Ihr Ergebnis mit einer Leistungsbilanz.
+\end{teilaufgaben}
+\begin{tipp}Im VZS bedeutet $P = U\cdot I > 0$ aufgenommene Leistung, im EZS bedeutet $P = U\cdot I > 0$ abgegebene Leistung.\end{tipp}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Ströme mit Vorzeichen}
+\leitfrage{Der tatsächliche Strom von $\SI{2}{A}$ fließt im Uhrzeigersinn (aus dem Netzteil oben heraus, durch $R$ nach rechts, im Akku nach unten). In welche Richtung zeigen die Pfeile $I_1$ und $I_3$?}
+$I_1$ zeigt im Netzteil nach oben, also in tatsächlicher Flussrichtung: $I_1 = \ergebnis{+\SI{2}{A}}$.\\
+$I_3$ zeigt im Akku nach oben, also \emph{gegen} die tatsächliche Flussrichtung: $I_3 = \ergebnis{-\SI{2}{A}}$.
+\schritt{b) Zählpfeilsysteme bestimmen}
+Wir vergleichen jeweils nur die \emph{Pfeilrichtungen} (nicht die Vorzeichen der Werte):
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Element & Pfeile & System\\\midrule
+Netzteil & $U_1$ nach unten, $I_1$ nach oben (entgegengesetzt) & EZS\\
+$R$ & $U_R$ nach links, $I$ nach rechts (entgegengesetzt) & EZS\\
+Akku & $U_2$ nach unten, $I_3$ nach oben (entgegengesetzt) & EZS\\\bottomrule
+\end{tabular}
+\end{center}
+Alle drei stehen im EZS -- beim Widerstand ist das ungewöhnlich, aber erlaubt.
+\schritt{c) Spannung am Widerstand}
+Im EZS lautet die Bauelementgleichung des Widerstands mit negativem Vorzeichen (Skript Kap.~1.5):
+\[
+  U_R = -R\cdot I = -\SI{2}{\ohm}\cdot\SI{2}{A} = \ergebnis{-\SI{4}{V}}
+\]
+Physikalisch heißt das: Das linke Ende von $R$ liegt um $\SI{4}{V}$ höher als das rechte -- wie erwartet, da der Strom von links nach rechts fließt.
+\schritt{d) Leistungen}
+Alle Elemente stehen im EZS, also bedeutet $P = U\cdot I > 0$ jeweils \emph{abgegebene} Leistung:
+\begin{align*}
+  P_\text{Netzteil} &= U_1\cdot I_1 = \SI{12}{V}\cdot\SI{2}{A} = +\SI{24}{W} &&\Rightarrow\ \text{gibt } \SI{24}{W} \text{ ab}\\
+  P_R &= U_R\cdot I = (-\SI{4}{V})\cdot\SI{2}{A} = -\SI{8}{W} &&\Rightarrow\ \text{nimmt } \SI{8}{W} \text{ auf}\\
+  P_\text{Akku} &= U_2\cdot I_3 = \SI{8}{V}\cdot(-\SI{2}{A}) = -\SI{16}{W} &&\Rightarrow\ \text{nimmt } \SI{16}{W} \text{ auf (wird geladen)}
+\end{align*}
+\schritt{e) Leistungsbilanz}
+Abgegebene Leistung $=$ aufgenommene Leistung: $\SI{24}{W} = \SI{8}{W} + \SI{16}{W}$ \checkmark\\
+Gleichwertig: Die Summe aller (im EZS gezählten) Leistungen ist null: $24 - 8 - 16 = 0$.
+\typfehler{Das Vorzeichen eines Ergebnisses mit dem Zählpfeilsystem verwechseln: Ob VZS oder EZS vorliegt, hängt \emph{nur} von den eingezeichneten Pfeilrichtungen ab, nicht davon, ob ein Element „eigentlich“ ein Verbraucher ist. Erst das Vorzeichen der berechneten Leistung verrät, was physikalisch passiert.}
+\end{loesung}
+
+\end{document}

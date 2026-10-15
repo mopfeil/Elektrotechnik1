@@ -1,0 +1,189 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{get-uebung}
+
+\blatt{2}{Drahtwiderstand und Temperaturabhängigkeit}{Kap.~1.6--1.7}
+
+\begin{document}
+
+\blattkopf{
+  \item den Widerstand eines Leiters aus Länge, Querschnitt und Material mit $R = \rho\, l/A = l/(\kappa A)$ berechnen,
+  \item einen Leiterquerschnitt nach einem zulässigen Spannungsfall auswählen,
+  \item die lineare Näherung $R(\vartheta) \approx R_{20}\,(1 + \alpha_{20}\,\Delta\vartheta)$ anwenden und nach jeder Größe umstellen,
+  \item einen Temperaturkoeffizienten aus Messwerten bestimmen und erklären, warum er von der Bezugstemperatur abhängt.
+}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Das Verlängerungskabel}{15}
+Ein Wasserkocher ($\SI{230}{V}$, $\SI{2000}{W}$) wird über eine $\SI{25}{m}$ lange Kabeltrommel betrieben. Das Kabel hat zwei Kupferadern (Hin- und Rückleiter) mit je $A = \SI{1.5}{mm^2}$ Querschnitt; $\kappa_\text{Cu} = \SI{56}{m/(\ohm.mm^2)}$.
+\begin{teilaufgaben}
+  \item Berechnen Sie den Widerstand $R_\text{L}$ und den Leitwert $G_\text{L}$ der gesamten Leitung.
+  \item Wie groß sind näherungsweise der Spannungsfall $\Delta U$ auf der Leitung (absolut und in Prozent von $\SI{230}{V}$) und die Verlustleistung im Kabel? Rechnen Sie dazu mit dem Nennstrom des Wasserkochers.
+  \item Der Spannungsfall soll höchstens $\SI{1}{\percent}$ betragen. Welcher Querschnitt ist mindestens nötig? Wählen Sie aus den Normquerschnitten $\SI{1.5}{mm^2}$, $\SI{2.5}{mm^2}$, $\SI{4}{mm^2}$, $\SI{6}{mm^2}$.
+\end{teilaufgaben}
+\begin{tipp}Der Strom muss zum Gerät hin \emph{und} wieder zurück fließen. Wie lang ist also der Leiter, den der Strom durchläuft?\end{tipp}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Widerstand und Leitwert}
+\leitfrage{Welche Länge $l$ gehört in die Formel -- \SI{25}{m} oder \SI{50}{m}?}
+Der Strom durchläuft Hin- und Rückleiter, also $l = 2\cdot\SI{25}{m} = \SI{50}{m}$. Mit $R = l/(\kappa A)$:
+\[
+  R_\text{L} = \frac{\SI{50}{m}}{\SI{56}{\frac{m}{\ohm\,mm^2}}\cdot\SI{1.5}{mm^2}} \approx \ergebnis{\SI{0.595}{\ohm}},
+  \qquad G_\text{L} = \frac{1}{R_\text{L}} = \ergebnis{\SI{1.68}{S}}
+\]
+Die Einheiten kürzen sich: $\frac{\mathrm{m}}{\frac{\mathrm{m}}{\Omega\,\mathrm{mm^2}}\cdot\mathrm{mm^2}} = \Omega$. Deshalb ist die Angabe von $\kappa$ in $\si{m/(\ohm.mm^2)}$ so praktisch: $l$ in Metern und $A$ in Quadratmillimetern direkt einsetzen.
+\schritt{b) Spannungsfall und Verluste}
+Nennstrom: $I = P/U = \SI{2000}{W}/\SI{230}{V} \approx \SI{8.70}{A}$ (der kleine Leitungswiderstand ändert ihn kaum).
+\[
+  \Delta U = R_\text{L}\cdot I \approx \SI{0.595}{\ohm}\cdot\SI{8.70}{A} \approx \ergebnis{\SI{5.18}{V}} \;\hat{=}\; \SI{2.25}{\percent},
+  \qquad P_\text{V} = I^2 R_\text{L} \approx \ergebnis{\SI{45}{W}}
+\]
+Das Kabel heizt also mit $\SI{45}{W}$ -- auf der aufgerollten Trommel kann das gefährlich warm werden!
+\schritt{c) Querschnitt auswählen}
+\leitfrage{Stellen Sie $\Delta U = I\cdot l/(\kappa A)$ nach $A$ um.}
+Zulässig sind $\Delta U_\text{max} = 0{,}01\cdot\SI{230}{V} = \SI{2.3}{V}$:
+\[
+  A_\text{min} = \frac{l\cdot I}{\kappa\cdot\Delta U_\text{max}} = \frac{\SI{50}{m}\cdot\SI{8.70}{A}}{\SI{56}{\frac{m}{\ohm\,mm^2}}\cdot\SI{2.3}{V}} \approx \SI{3.38}{mm^2}
+  \quad\Rightarrow\quad \ergebnis{A = \SI{4}{mm^2}}
+\]
+Es muss der nächst\emph{größere} Normquerschnitt gewählt werden, sonst wird die Grenze überschritten.
+\typfehler{Nur die einfache Kabellänge einsetzen (Ergebnis halb so groß). Den Querschnitt auf den \emph{nächstgelegenen} statt auf den nächstgrößeren Normwert runden. $\mathrm{mm^2}$ in $\mathrm{m^2}$ umrechnen, obwohl $\kappa$ schon in $\si{m/(\ohm.mm^2)}$ gegeben ist -- dann muss man konsequent \emph{alles} umrechnen ($\SI{1}{mm^2} = \SI{e-6}{m^2}$).}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Kupfer oder Aluminium?}{12}
+Für eine Freileitung soll ein Leiter aus Kupfer durch einen Leiter aus Aluminium \emph{mit gleichem Widerstand und gleicher Länge} ersetzt werden.
+
+\gegeben{$\rho_\text{Cu} = \SI{0.0178}{\ohm.mm^2/m}$, $\rho_\text{Al} = \SI{0.0286}{\ohm.mm^2/m}$, Dichten $\varrho_{m,\text{Cu}} = \SI{8.96}{g/cm^3}$, $\varrho_{m,\text{Al}} = \SI{2.70}{g/cm^3}$.}
+\begin{teilaufgaben}
+  \item Um welchen Faktor muss der Querschnitt des Aluminiumleiters größer sein? Um welchen Faktor wächst damit der Durchmesser eines runden Leiters?
+  \item Wie verhält sich die Masse des Aluminiumleiters zu der des Kupferleiters?
+  \item Begründen Sie damit, warum Hochspannungsfreileitungen meist aus Aluminium (mit Stahlseele) bestehen, Kabel in Gebäuden dagegen aus Kupfer.
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Querschnitt und Durchmesser}
+\leitfrage{Setzen Sie $R_\text{Al} = R_\text{Cu}$ mit $R = \rho\,l/A$ an. Was kürzt sich heraus?}
+\[
+  \rho_\text{Al}\frac{l}{A_\text{Al}} = \rho_\text{Cu}\frac{l}{A_\text{Cu}}
+  \quad\Rightarrow\quad
+  \frac{A_\text{Al}}{A_\text{Cu}} = \frac{\rho_\text{Al}}{\rho_\text{Cu}} = \frac{0{,}0286}{0{,}0178} \approx \ergebnis{1{,}61}
+\]
+Wegen $A = \pi d^2/4$ ist $A \sim d^2$, also
+$\dfrac{d_\text{Al}}{d_\text{Cu}} = \sqrt{1{,}61} \approx \ergebnis{1{,}27}$.
+\schritt{b) Massenverhältnis}
+Masse $=$ Dichte $\cdot$ Volumen $= \varrho_m\cdot A\cdot l$. Bei gleicher Länge:
+\[
+  \frac{m_\text{Al}}{m_\text{Cu}} = \frac{\varrho_{m,\text{Al}}}{\varrho_{m,\text{Cu}}}\cdot\frac{A_\text{Al}}{A_\text{Cu}}
+  = \frac{2{,}70}{8{,}96}\cdot 1{,}61 \approx \ergebnis{0{,}48}
+\]
+Der Aluminiumleiter ist trotz größeren Querschnitts nur etwa \emph{halb so schwer}.
+\schritt{c) Bewertung}
+Bei Freileitungen zählt das Gewicht (Masten, Seilspannung) und der Preis; der größere Durchmesser stört in der Luft nicht. In Gebäuden ist der Platz in Rohren und Dosen knapp, und Kupfer lässt sich zuverlässiger klemmen -- deshalb Kupfer.
+\typfehler{Den Kehrwert bilden ($A_\text{Al}/A_\text{Cu} = \rho_\text{Cu}/\rho_\text{Al}$): Das schlechter leitende Material braucht den \emph{größeren} Querschnitt. Faktor für $A$ und für $d$ verwechseln.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Wann verdoppelt sich ein Widerstand?}{13}
+Die Wicklung eines Elektromotors besteht aus Kupferdraht ($\alpha_{20} = \SI{3.93e-3}{1/K}$). Verwenden Sie die lineare Näherung
+$R(\vartheta) \approx R_{20}\,\bigl(1 + \alpha_{20}\,(\vartheta - \SI{20}{\celsius})\bigr)$.
+\begin{teilaufgaben}
+  \item Bei welcher Temperatur hätte die Wicklung (nach der linearen Näherung) den doppelten Widerstand wie bei $\SI{20}{\celsius}$? Hängt das Ergebnis vom Wert $R_{20}$ ab?
+  \item Die Wicklungstemperatur eines Motors lässt sich nicht direkt messen, weil die Wicklung im Inneren liegt. Man misst deshalb den Widerstand: Im kalten Zustand ($\SI{20}{\celsius}$) beträgt er $\SI{2.00}{\ohm}$, direkt nach einer Stunde Betrieb $\SI{2.40}{\ohm}$. Wie warm ist die Wicklung?
+  \item Welchen Strom nimmt der Motor beim Anlauf an $\SI{24}{V}$ im kalten und im warmen Zustand auf, wenn man (im Stillstand) nur den Wicklungswiderstand betrachtet?
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Verdopplungstemperatur}
+\leitfrage{Setzen Sie $R(\vartheta) = 2R_{20}$ in die Näherung ein. Was passiert mit $R_{20}$?}
+\[
+  2R_{20} = R_{20}\,(1 + \alpha_{20}\,\Delta\vartheta)
+  \quad\Rightarrow\quad 1 = \alpha_{20}\,\Delta\vartheta
+  \quad\Rightarrow\quad \Delta\vartheta = \frac{1}{\alpha_{20}} = \frac{1}{\SI{3.93e-3}{1/K}} \approx \SI{254.5}{K}
+\]
+\[
+  \vartheta = \SI{20}{\celsius} + \SI{254.5}{K} \approx \ergebnis{\SI{274.5}{\celsius}}
+\]
+$R_{20}$ kürzt sich heraus: Das Ergebnis gilt für \emph{jeden} Kupferleiter. (In Wahrheit ist $R(\vartheta)$ nicht exakt linear, so weit von $\SI{20}{\celsius}$ entfernt ist die Näherung nur grob.)
+\schritt{b) Wicklungstemperatur aus Widerstandsmessung}
+Umstellen nach $\Delta\vartheta$:
+\[
+  \Delta\vartheta = \frac{1}{\alpha_{20}}\left(\frac{R(\vartheta)}{R_{20}} - 1\right)
+  = \frac{1}{\SI{3.93e-3}{1/K}}\left(\frac{\SI{2.40}{\ohm}}{\SI{2.00}{\ohm}} - 1\right)
+  = \frac{0{,}2}{\SI{3.93e-3}{1/K}} \approx \SI{50.9}{K}
+\]
+\[
+  \vartheta \approx \SI{20}{\celsius} + \SI{50.9}{K} \approx \ergebnis{\SI{70.9}{\celsius}}
+\]
+\schritt{c) Anlaufströme}
+\[
+  I_\text{kalt} = \frac{\SI{24}{V}}{\SI{2.00}{\ohm}} = \ergebnis{\SI{12}{A}}, \qquad
+  I_\text{warm} = \frac{\SI{24}{V}}{\SI{2.40}{\ohm}} = \ergebnis{\SI{10}{A}}
+\]
+Der kalte Motor zieht beim Anlauf also $\SI{20}{\percent}$ mehr Strom.
+\typfehler{$\vartheta$ statt $\Delta\vartheta$ einsetzen, also das Ergebnis $\SI{254.5}{\celsius}$ angeben -- die Näherung arbeitet mit der \emph{Differenz} zur Bezugstemperatur. Temperaturdifferenzen werden in $\si{K}$ angegeben, absolute Temperaturen hier in $\si{\celsius}$.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\ifloesung\else\newpage\fi
+\begin{aufgabe}{Temperaturkoeffizient aus Messwerten}{17}
+Ein Platin-Temperatursensor wird in einem Wasserbad vermessen:
+\begin{center}
+\begin{tabular}{l*{5}{c}}
+\toprule
+$\vartheta$ in $\si{\celsius}$ & 0 & 20 & 40 & 60 & 80\\
+$R$ in $\si{\ohm}$ & \num{100.00} & \num{107.79} & \num{115.54} & \num{123.24} & \num{130.90}\\
+\bottomrule
+\end{tabular}
+\end{center}
+\begin{teilaufgaben}
+  \item Tragen Sie die Messwerte in ein Diagramm $R(\vartheta)$ ein. Ist der Zusammenhang exakt linear?
+  \item Bestimmen Sie die Steigung $\mathrm{d}R/\mathrm{d}\vartheta$ bei $\SI{20}{\celsius}$ näherungsweise aus den beiden benachbarten Messpunkten und daraus den Temperaturkoeffizienten $\alpha_{20}$.
+  \item Berechnen Sie mit der linearen Näherung den Widerstand bei $\SI{80}{\celsius}$ und vergleichen Sie mit dem Messwert. Wie groß ist der Fehler in Ohm und in Prozent?
+  \item Dieselbe Gerade soll mit der Bezugstemperatur $\SI{0}{\celsius}$ geschrieben werden: $R(\vartheta) \approx R_0\,(1 + \alpha_0\,\vartheta)$. Zeigen Sie, dass $\alpha_0 = \dfrac{\alpha_{20}}{1 - \alpha_{20}\cdot\SI{20}{K}}$ gilt, und berechnen Sie $\alpha_0$. Warum ist $\alpha_0 > \alpha_{20}$?
+\end{teilaufgaben}
+\begin{tipp}Laut Skript ist $\alpha_{\vartheta_0} = \dfrac{1}{R(\vartheta_0)}\cdot\dfrac{\mathrm{d}R}{\mathrm{d}\vartheta}\Big|_{\vartheta_0}$ -- die Steigung wird auf den Widerstand bei der Bezugstemperatur bezogen.\end{tipp}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Diagramm}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[width=8cm,height=5.2cm,xlabel={$\vartheta$ in $\si{\celsius}$},ylabel={$R$ in $\si{\ohm}$},
+  xmin=-5,xmax=85,ymin=95,ymax=135,grid=major,legend pos=north west,legend style={font=\small}]
+  \addplot[only marks,mark=*,hsublau] coordinates {(0,100.00) (20,107.79) (40,115.54) (60,123.24) (80,130.90)};
+  \addlegendentry{Messwerte}
+  \addplot[loesungfarbe,thick,domain=-5:85] {107.79*(1+0.0036042*(x-20))};
+  \addlegendentry{Tangente bei $\SI{20}{\celsius}$}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+Die Differenzen zwischen benachbarten Werten sind $7{,}79$; $7{,}75$; $7{,}70$; $\SI{7.66}{\ohm}$ -- sie werden leicht kleiner. Die Kennlinie ist also \emph{fast}, aber nicht exakt linear (leicht nach unten gekrümmt).
+\schritt{b) Steigung und $\alpha_{20}$}
+\leitfrage{Welche zwei Messpunkte liegen symmetrisch um $\SI{20}{\celsius}$?}
+Die Punkte bei $\SI{0}{\celsius}$ und $\SI{40}{\celsius}$:
+\[
+  \frac{\mathrm{d}R}{\mathrm{d}\vartheta}\Big|_{20} \approx \frac{\SI{115.54}{\ohm} - \SI{100.00}{\ohm}}{\SI{40}{K}} = \SI{0.3885}{\ohm/K}
+\]
+\[
+  \alpha_{20} = \frac{1}{R_{20}}\cdot\frac{\mathrm{d}R}{\mathrm{d}\vartheta}\Big|_{20} = \frac{\SI{0.3885}{\ohm/K}}{\SI{107.79}{\ohm}} \approx \ergebnis{\SI{3.60e-3}{1/K}}
+\]
+\schritt{c) Vorhersage bei $\SI{80}{\celsius}$}
+\[
+  R(\SI{80}{\celsius}) \approx \SI{107.79}{\ohm}\cdot\bigl(1 + \SI{3.604e-3}{1/K}\cdot\SI{60}{K}\bigr) \approx \ergebnis{\SI{131.10}{\ohm}}
+\]
+Fehler: $\SI{131.10}{\ohm} - \SI{130.90}{\ohm} = \SI{0.20}{\ohm}$, also etwa $\SI{0.15}{\percent}$. Je weiter man sich von der Bezugstemperatur entfernt, desto größer wird der Fehler (Abb.~1.4 im Skript).
+\schritt{d) Umrechnung auf $\SI{0}{\celsius}$}
+\leitfrage{Beide Darstellungen beschreiben dieselbe Gerade. Welchen Wert $R_0$ liefert die $\SI{20}{\celsius}$-Gerade bei $\vartheta = \SI{0}{\celsius}$, und welche Steigung hat sie?}
+Gerade bei $\SI{0}{\celsius}$: $R_0 = R_{20}\,(1 - \alpha_{20}\cdot\SI{20}{K})$. Die Steigung ist überall gleich: $R_{20}\,\alpha_{20} = R_0\,\alpha_0$. Also
+\[
+  \alpha_0 = \frac{R_{20}\,\alpha_{20}}{R_0} = \frac{\alpha_{20}}{1 - \alpha_{20}\cdot\SI{20}{K}}
+  = \frac{\SI{3.604e-3}{1/K}}{1 - 0{,}0721} \approx \ergebnis{\SI{3.88e-3}{1/K}}
+\]
+$\alpha_0$ ist größer, weil dieselbe Steigung auf den \emph{kleineren} Widerstand $R_0 < R_{20}$ bezogen wird.
+\typfehler{Die Steigung nicht auf $R_{20}$ beziehen (dann hat $\alpha$ die falsche Einheit $\si{\ohm/K}$). Glauben, $\alpha$ sei eine reine Materialkonstante unabhängig von der Bezugstemperatur -- deshalb steht der Index immer dabei.}
+\end{loesung}
+
+\end{document}

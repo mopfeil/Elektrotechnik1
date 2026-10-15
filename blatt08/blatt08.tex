@@ -1,0 +1,276 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{get-uebung}
+
+\blatt{8}{Quellen, Quellenumwandlung und Arbeitspunkt}{Kap.~2.8--2.9}
+
+% Raster fuer U-I-Diagramme (I horizontal, U vertikal wie im Skript)
+\pgfplotsset{kennlinie/.style={
+  width=0.62\textwidth, height=0.5\textwidth,
+  axis lines=left, grid=both, minor tick num=1,
+  grid style={gray!25}, major grid style={gray!45},
+  xlabel={$I$ in A}, ylabel={$U$ in V},
+  /pgf/number format/use comma,
+  every axis x label/.style={at={(current axis.right of origin)},anchor=west},
+  every axis y label/.style={at={(current axis.above origin)},anchor=south},
+  every axis plot/.append style={thick}}}
+
+\begin{document}
+
+\blattkopf{
+  \item das Verhalten idealer und realer Spannungs- und Stromquellen beschreiben und ihre Kennlinien zeichnen,
+  \item Leerlaufspannung, Kurzschlussstrom und Innenwiderstand einer realen Quelle aus Messwerten bestimmen,
+  \item reale Spannungs- und Stromquellen ineinander umwandeln und damit Netzwerke schrittweise vereinfachen,
+  \item den Arbeitspunkt einer Quelle mit linearer und nichtlinearer Last grafisch ermitteln.
+}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Eine Autobatterie vermessen}{15}
+Eine Autobatterie soll durch eine reale Spannungsquelle (Leerlaufspannung $U_0$, Innenwiderstand $R_i$) beschrieben werden. Dazu wird ein einstellbarer Lastwiderstand $R_L$ angeschlossen und es werden zwei Messpunkte aufgenommen:
+\begin{center}
+\begin{minipage}{0.48\textwidth}
+\centering
+\begin{circuitikz}
+  \draw (0,0) to[V, v<=$U_0$] (0,3) to[R, l=$R_i$] (2.6,3)
+        to[short, -o, i=$I$] (3.6,3) -- (5,3) to[vR, l=$R_L$] (5,0) -- (3.6,0)
+        to[short, o-] (0,0);
+  \draw (3.6,3) to[open, v^=$U$] (3.6,0);
+  \draw[dashed, gray] (-1.4,-0.35) rectangle (2.85,3.9);
+  \node[gray, font=\small] at (0.7,-0.65) {Batterie};
+\end{circuitikz}
+\end{minipage}\hfill
+\begin{minipage}{0.45\textwidth}
+\centering
+\begin{tabular}{ccc}
+\toprule
+Messung & $I$ & $U$\\\midrule
+1 & $\SI{2}{A}$ & $\SI{11.4}{V}$\\
+2 & $\SI{6}{A}$ & $\SI{10.2}{V}$\\\bottomrule
+\end{tabular}
+\end{minipage}
+\end{center}
+\begin{teilaufgaben}
+  \item Stellen Sie für beide Messpunkte die Gleichung $U = U_0 - R_i\cdot I$ auf und bestimmen Sie daraus $R_i$ und $U_0$.
+  \item Wie groß ist der Kurzschlussstrom $I_k$? Warum sollte man ihn bei einer Autobatterie besser nicht messen?
+  \item Geben Sie das Ersatzschaltbild als reale \emph{Stromquelle} an (mit Zahlenwerten).
+  \item Welche Klemmenspannung und welcher Strom stellen sich bei $R_L = \SI{1.2}{\ohm}$ ein?
+  \item Begründen Sie, warum das Modell der \emph{idealen} Spannungsquelle für einen Kurzschluss keinen Sinn ergibt.
+\end{teilaufgaben}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Zwei Gleichungen, zwei Unbekannte}
+\leitfrage{Beide Messpunkte liegen auf derselben Geraden. Was erhalten Sie, wenn Sie die beiden Gleichungen voneinander abziehen?}
+\[
+  \SI{11.4}{V} = U_0 - R_i\cdot\SI{2}{A}, \qquad \SI{10.2}{V} = U_0 - R_i\cdot\SI{6}{A}
+\]
+Subtraktion der zweiten von der ersten Gleichung eliminiert $U_0$:
+\[
+  \SI{1.2}{V} = R_i\cdot\SI{4}{A} \quad\Rightarrow\quad R_i = \frac{\Delta U}{\Delta I} = \frac{\SI{1.2}{V}}{\SI{4}{A}} = \ergebnis{\SI{0.3}{\ohm}}
+\]
+Einsetzen in die erste Gleichung:
+\[
+  U_0 = \SI{11.4}{V} + \SI{0.3}{\ohm}\cdot\SI{2}{A} = \ergebnis{\SI{12.0}{V}}
+\]
+Der Innenwiderstand ist also (bis auf das Vorzeichen) die Steigung der Kennlinie.
+\schritt{b) Kurzschlussstrom}
+Im Kurzschluss ist $U = 0$:
+\[
+  I_k = \frac{U_0}{R_i} = \frac{\SI{12}{V}}{\SI{0.3}{\ohm}} = \ergebnis{\SI{40}{A}}
+\]
+Bei einer echten Autobatterie ist $R_i$ noch deutlich kleiner (einige m$\Omega$), der Kurzschlussstrom läge im Bereich mehrerer hundert Ampere. Leitungen glühen durch, die Batterie kann beschädigt werden oder Gas freisetzen. Deshalb bestimmt man $I_k$ rechnerisch aus zwei ungefährlichen Messpunkten.
+\schritt{c) Ersatzstromquelle}
+Bei der Quellenumwandlung bleibt der Innenwiderstand gleich, er liegt jetzt \emph{parallel} zur idealen Stromquelle:
+\[
+  I_k = \SI{40}{A}, \qquad R_i = \SI{0.3}{\ohm} \ \text{parallel}
+\]
+\schritt{d) Belastung mit $R_L = \SI{1.2}{\ohm}$}
+$R_i$ und $R_L$ liegen in Reihe:
+\[
+  I = \frac{U_0}{R_i + R_L} = \frac{\SI{12}{V}}{\SI{1.5}{\ohm}} = \ergebnis{\SI{8}{A}}, \qquad
+  U = R_L\cdot I = \SI{1.2}{\ohm}\cdot\SI{8}{A} = \ergebnis{\SI{9.6}{V}}
+\]
+Kontrolle mit der Kennlinie: $U = \SI{12}{V} - \SI{0.3}{\ohm}\cdot\SI{8}{A} = \SI{9.6}{V}$ \checkmark
+\schritt{e) Grenze des idealen Modells}
+Eine ideale Spannungsquelle erzwingt an ihren Klemmen immer die Spannung $U_0$. Ein idealer Kurzschluss erzwingt die Spannung $0$. Beide Forderungen widersprechen sich; formal ergäbe sich $I = U_0/0 \to \infty$. Erst der Innenwiderstand macht das Modell realistisch.
+\typfehler{$R_i = U/I$ aus \emph{einem} Messpunkt berechnen -- das liefert den Lastwiderstand ($\SI{11.4}{V}/\SI{2}{A} = \SI{5.7}{\ohm} = R_L$), nicht den Innenwiderstand! $R_i$ steckt in der \emph{Änderung} $\Delta U/\Delta I$.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Netzwerk durch Quellenumwandlung vereinfachen}{15}
+Das folgende Netzwerk soll bezüglich der Klemmen a--b durch schrittweise Quellenumwandlung in eine einzige reale Spannungsquelle umgeformt werden.
+\begin{center}
+\begin{circuitikz}
+  \draw (0,0) to[V, v<=$U$] (0,3) to[R, l=$R_1$] (3,3)
+        to[R, l=$R_2$, *-*] (3,0);
+  \draw (3,3) -- (5,3);
+  \draw (5,0) to[I, i=$I_q$, *-*] (5,3);
+  \draw (5,3) to[R, l=$R_3$] (8,3) to[short, -o] (9,3) node[right]{a};
+  \draw (0,0) -- (8,0) to[short, -o] (9,0) node[right]{b};
+  \draw (9,3) to[open, v^=$U_\text{ab}$] (9,0);
+\end{circuitikz}
+\end{center}
+\gegeben{$U = \SI{24}{V}$, $I_q = \SI{2}{A}$, $R_1 = \SI{6}{\ohm}$, $R_2 = \SI{12}{\ohm}$, $R_3 = \SI{2}{\ohm}$}
+\begin{teilaufgaben}
+  \item Wandeln Sie die reale Spannungsquelle ($U$, $R_1$) in eine reale Stromquelle um. Zeichnen Sie die neue Schaltung.
+  \item Fassen Sie die parallelen Stromquellen und die parallelen Widerstände jeweils zusammen.
+  \item Wandeln Sie das Ergebnis wieder in eine reale Spannungsquelle um und berücksichtigen Sie $R_3$. Geben Sie die Leerlaufspannung $U_0$ und den Innenwiderstand $R_i$ des Netzwerks an.
+  \item An die Klemmen wird $R_L = \SI{6}{\ohm}$ angeschlossen. Berechnen Sie $U_\text{ab}$ und den Strom durch $R_L$.
+\end{teilaufgaben}
+\begin{tipp}Bei der Umwandlung bleibt der Innenwiderstand gleich, die Quelle ändert ihren Wert nach dem Ohmschen Gesetz. Achten Sie auf die Pfeilrichtung: Der Strompfeil der Ersatzstromquelle zeigt zum Pluspol der Spannungsquelle.\end{tipp}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Spannungsquelle $\to$ Stromquelle}
+\leitfrage{Welcher Strom würde fließen, wenn man die Klemmen der realen Spannungsquelle ($U$, $R_1$) kurzschließt?}
+\[
+  I_{k1} = \frac{U}{R_1} = \frac{\SI{24}{V}}{\SI{6}{\ohm}} = \SI{4}{A}, \qquad R_1 = \SI{6}{\ohm} \text{ jetzt parallel}
+\]
+Der Pluspol von $U$ liegt oben, also speist $I_{k1}$ ebenso wie $I_q$ nach oben in den oberen Knoten ein:
+\begin{center}
+\begin{circuitikz}[scale=0.8, transform shape]
+  \draw (0,0) to[I, i=$I_{k1}$] (0,3) -- (6,3);
+  \draw (1.8,3) to[R, l=$R_1$, *-*] (1.8,0);
+  \draw (3.6,3) to[R, l=$R_2$, *-*] (3.6,0);
+  \draw (5.4,0) to[I, i=$I_q$] (5.4,3);
+  \draw (5.4,3) to[R, l=$R_3$, *-] (8,3) to[short, -o] (8.8,3) node[right]{a};
+  \draw (0,0) -- (8,0) to[short, -o] (8.8,0) node[right]{b};
+\end{circuitikz}
+\end{center}
+\schritt{b) Zusammenfassen}
+Parallele Stromquellen addieren sich (gleiche Richtung!), parallele Widerstände werden parallel geschaltet:
+\[
+  I_\text{ges} = I_{k1} + I_q = \SI{4}{A} + \SI{2}{A} = \SI{6}{A}, \qquad
+  R_1\parallel R_2 = \frac{\SI{6}{\ohm}\cdot\SI{12}{\ohm}}{\SI{18}{\ohm}} = \SI{4}{\ohm}
+\]
+\schritt{c) Stromquelle $\to$ Spannungsquelle, $R_3$ in Reihe}
+\[
+  U' = I_\text{ges}\cdot (R_1\parallel R_2) = \SI{6}{A}\cdot\SI{4}{\ohm} = \SI{24}{V}
+\]
+Jetzt liegt $R_3$ in Reihe zum Innenwiderstand $\SI{4}{\ohm}$:
+\begin{center}
+\begin{circuitikz}[scale=0.8, transform shape]
+  \draw (0,0) to[V, v<=$U_0$] (0,3) to[R, l=$R_i$] (3,3) to[short, -o] (4,3) node[right]{a};
+  \draw (0,0) -- (3,0) to[short, -o] (4,0) node[right]{b};
+\end{circuitikz}
+\end{center}
+\[
+  U_0 = \ergebnis{\SI{24}{V}}, \qquad R_i = \SI{4}{\ohm} + R_3 = \ergebnis{\SI{6}{\ohm}}
+\]
+Durch $R_3$ fließt im Leerlauf kein Strom, deshalb ändert er die Leerlaufspannung nicht.
+\schritt{d) Belastung}
+Mit $R_L = \SI{6}{\ohm} = R_i$ teilt sich die Spannung genau zur Hälfte auf:
+\[
+  U_\text{ab} = U_0\cdot\frac{R_L}{R_i+R_L} = \SI{24}{V}\cdot\frac{6}{12} = \ergebnis{\SI{12}{V}}, \qquad
+  I_L = \frac{U_\text{ab}}{R_L} = \ergebnis{\SI{2}{A}}
+\]
+\typfehler{Den Widerstand $R_3$ bei der Umwandlung „mitnehmen“, obwohl er nicht direkt parallel bzw.\ in Reihe zur jeweiligen Quelle liegt. Umwandeln darf man nur eine Quelle mit \emph{ihrem} Innenwiderstand. Außerdem: Die Pfeilrichtung der neuen Stromquelle falsch wählen -- dann subtrahieren sich die Ströme in b) fälschlich zu $\SI{2}{A}$.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Arbeitspunkt mit ohmscher Last grafisch bestimmen}{12}
+Eine reale Spannungsquelle mit $U_0 = \SI{12}{V}$ und $R_i = \SI{4}{\ohm}$ wird mit einem Lastwiderstand $R_L$ belastet.
+\begin{teilaufgaben}
+  \item Berechnen Sie den Kurzschlussstrom und zeichnen Sie die Quellenkennlinie $U(I)$ in das Diagramm.
+  \item Zeichnen Sie die Widerstandsgeraden für $R_L = \SI{8}{\ohm}$ und $R_L = \SI{2}{\ohm}$ ein und lesen Sie die Arbeitspunkte ab.
+  \item Überprüfen Sie einen der Arbeitspunkte rechnerisch.
+  \item Welcher Lastwiderstand führt zum Arbeitspunkt $I = \SI{1.5}{A}$? Welche Klemmenspannung stellt sich ein?
+\end{teilaufgaben}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[kennlinie, xmin=0, xmax=3.5, ymin=0, ymax=13, xtick={0,0.5,...,3.5}, ytick={0,2,...,12}]
+  \ifloesung
+    \addplot[hsublau, domain=0:3] {12-4*x} node[pos=0.1, above right, font=\small]{Quelle};
+    \addplot[loesungfarbe, domain=0:1.625] {8*x} node[pos=0.9, left, font=\small]{$\SI{8}{\ohm}$};
+    \addplot[hinweisfarbe, domain=0:3.5] {2*x} node[pos=0.95, above left, font=\small]{$\SI{2}{\ohm}$};
+    \addplot[only marks, mark=*, mark size=2.5pt] coordinates {(1,8) (2,4)};
+    \node[right, font=\small] at (axis cs:1,8) {AP$_1$};
+    \node[above right, font=\small] at (axis cs:2,4) {AP$_2$};
+  \fi
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Quellenkennlinie}
+Die Kennlinie $U = U_0 - R_i\cdot I$ ist eine Gerade durch die beiden Achsenschnittpunkte
+\[
+  (I = 0;\ U = U_0 = \SI{12}{V}) \quad\text{und}\quad (I = I_k = U_0/R_i = \SI{3}{A};\ U = 0).
+\]
+\schritt{b) Widerstandsgeraden und Arbeitspunkte}
+\leitfrage{Welche Kurve beschreibt $U = R_L\cdot I$? Durch welchen Punkt geht sie immer?}
+Jede Widerstandsgerade geht durch den Ursprung; einen zweiten Punkt erhält man z.\,B.\ bei $I = \SI{1}{A}$: $U = \SI{8}{V}$ bzw.\ $U = \SI{2}{V}$. Der Schnittpunkt mit der Quellenkennlinie ist der Arbeitspunkt (siehe Diagramm oben):
+\[
+  R_L = \SI{8}{\ohm}:\ \ergebnis{I = \SI{1}{A},\ U = \SI{8}{V}}
+  \qquad\qquad
+  R_L = \SI{2}{\ohm}:\ \ergebnis{I = \SI{2}{A},\ U = \SI{4}{V}}
+\]
+\schritt{c) Rechnerische Kontrolle}
+Für $R_L = \SI{8}{\ohm}$: $I = U_0/(R_i+R_L) = \SI{12}{V}/\SI{12}{\ohm} = \SI{1}{A}$, $U = \SI{8}{\ohm}\cdot\SI{1}{A} = \SI{8}{V}$ \checkmark
+\schritt{d) Gesuchter Lastwiderstand}
+Auf der Quellenkennlinie gilt bei $I = \SI{1.5}{A}$: $U = \SI{12}{V} - \SI{4}{\ohm}\cdot\SI{1.5}{A} = \SI{6}{V}$. Damit
+\[
+  R_L = \frac{U}{I} = \frac{\SI{6}{V}}{\SI{1.5}{A}} = \ergebnis{\SI{4}{\ohm}}
+\]
+Hier ist $R_L = R_i$, der Arbeitspunkt liegt genau in der Mitte der Kennlinie ($U_0/2$, $I_k/2$). In Kapitel 2.12 werden Sie sehen, dass die Quelle in diesem Punkt die maximale Leistung abgibt.
+\typfehler{Die Widerstandsgerade mit der Steigung $1/R_L$ zeichnen. Weil hier $U$ über $I$ aufgetragen ist, ist die Steigung $R_L$ selbst. Prüfen Sie immer einen Punkt mit $U = R_L\cdot I$ nach.}
+\end{loesung}
+
+% -------------------------------------------------------------------
+\begin{aufgabe}{Arbeitspunkt mit nichtlinearem Bauteil}{15}
+Dieselbe Quelle wie in Aufgabe 8.3 ($U_0 = \SI{12}{V}$, $R_i = \SI{4}{\ohm}$) versorgt jetzt ein nichtlineares Bauteil N. Seine Kennlinie wurde gemessen und ist unten eingezeichnet:
+\begin{center}
+\begin{tabular}{l*{6}{c}}
+\toprule
+$U$ in V & 0 & 2 & 4 & 6 & 8 & 10\\
+$I$ in A & 0 & 0{,}17 & 0{,}67 & 1{,}50 & 2{,}67 & 4{,}17\\\bottomrule
+\end{tabular}
+\end{center}
+\begin{teilaufgaben}
+  \item Warum kann man den Strom hier nicht einfach mit dem Spannungsteiler oder $I = U_0/(R_i + R)$ berechnen?
+  \item Bestimmen Sie den Arbeitspunkt grafisch.
+  \item Welchen Widerstand $R = U/I$ hat das Bauteil im Arbeitspunkt? Ist es ein Widerspruch, dass Sie diesen Wert jetzt doch angeben können?
+  \item Die Leerlaufspannung der Quelle wird auf $U_0' = \SI{16}{V}$ erhöht ($R_i$ unverändert). Zeichnen Sie die neue Quellenkennlinie ein und lesen Sie den neuen Arbeitspunkt ab. Um wie viel Prozent steigt der Strom?
+\end{teilaufgaben}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[kennlinie, xmin=0, xmax=4.5, ymin=0, ymax=17, xtick={0,0.5,...,4.5}, ytick={0,2,...,16}]
+  \addplot[black, domain=0:4.5, samples=60] {sqrt(24*x)} node[pos=0.97, below right, font=\small]{N};
+  \ifloesung
+    \addplot[hsublau, domain=0:3] {12-4*x} node[pos=0.12, right=2pt, font=\small]{$U_0 = \SI{12}{V}$};
+    \addplot[loesungfarbe, domain=0:4] {16-4*x} node[pos=0.12, right=2pt, font=\small]{$U_0' = \SI{16}{V}$};
+    \addplot[only marks, mark=*, mark size=2.5pt] coordinates {(1.5,6) (2.188,7.247)};
+    \node[below left, font=\small] at (axis cs:1.5,6) {AP};
+    \node[below left, font=\small] at (axis cs:2.188,7.247) {AP$'$};
+  \fi
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\end{aufgabe}
+
+\begin{loesung}
+\schritt{a) Warum keine Formel?}
+Spannungsteiler und $I = U_0/(R_i+R)$ setzen einen \emph{konstanten} Widerstand voraus. Bei N hängt das Verhältnis $U/I$ vom Strom ab (die Kennlinie ist keine Gerade durch den Ursprung). Man kennt $R$ also erst, wenn man den Arbeitspunkt schon kennt.
+\schritt{b) Grafische Lösung}
+\leitfrage{Welche beiden Bedingungen muss der Arbeitspunkt gleichzeitig erfüllen?}
+Der Strom durch die Quelle ist derselbe wie durch N, und die Klemmenspannung ist dieselbe. Der Arbeitspunkt liegt also auf \emph{beiden} Kennlinien. Zeichnen Sie die Quellengerade von $(0;\ \SI{12}{V})$ nach $(\SI{3}{A};\ 0)$ ein. Der Schnittpunkt mit der Kennlinie von N liegt bei
+\[
+  \ergebnis{I \approx \SI{1.5}{A}, \quad U \approx \SI{6}{V}}
+\]
+Kontrolle mit der Tabelle: Bei $U = \SI{6}{V}$ fließen durch N $\SI{1.50}{A}$; die Quelle liefert bei $\SI{1.5}{A}$ die Spannung $\SI{12}{V} - \SI{6}{V} = \SI{6}{V}$ \checkmark
+\schritt{c) Widerstand im Arbeitspunkt}
+\[
+  R_\text{AP} = \frac{\SI{6}{V}}{\SI{1.5}{A}} = \ergebnis{\SI{4}{\ohm}}
+\]
+Kein Widerspruch: Dieser Wert gilt \emph{nur} in diesem einen Arbeitspunkt. Ändert sich die Quelle, ändert sich auch $R_\text{AP}$ -- man konnte ihn deshalb nicht vorab zur Berechnung nutzen.
+\schritt{d) Höhere Leerlaufspannung}
+Die neue Quellengerade verläuft \emph{parallel} zur alten (gleiche Steigung $-R_i$), von $(0;\ \SI{16}{V})$ nach $(\SI{4}{A};\ 0)$. Ablesen:
+\[
+  \ergebnis{I' \approx \SI{2.2}{A}, \quad U' \approx \SI{7.2}{V}}
+\]
+(Exakte Rechnung zur Kontrolle: Die Messwerte gehorchen $I = U^2/(\SI{24}{V^2/A})$. Gleichsetzen mit $I = (U_0'-U)/R_i$ führt auf $U^2 + 6U - 96 = 0$, also $U' = \SI{7.25}{V}$ und $I' = \SI{2.19}{A}$.)\\
+Relative Stromänderung: $\dfrac{I'}{I} = \dfrac{2{,}19}{1{,}5} \approx 1{,}46$, also $\approx\ergebnis{+\SI{46}{\percent}}$, obwohl $U_0$ nur um $\SI{33}{\percent}$ gestiegen ist. Bei einer nichtlinearen Last sind Ursache und Wirkung nicht proportional!
+\typfehler{Für d) den Widerstand $R_\text{AP} = \SI{4}{\ohm}$ aus c) weiterverwenden und $I' = \SI{16}{V}/\SI{8}{\ohm} = \SI{2}{A}$ rechnen -- das ist falsch, weil sich der Widerstand von N mit dem Arbeitspunkt ändert.}
+\end{loesung}
+
+\end{document}

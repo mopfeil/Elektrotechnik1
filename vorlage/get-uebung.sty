@@ -1,0 +1,146 @@
+% ===================================================================
+%  get-uebung.sty -- Vorlage fuer die Uebungsblaetter
+%  Grundlagen der Elektrotechnik, Teil 1: Gleichspannung
+%
+%  Jedes Blatt besteht aus EINER Quelldatei (blattNN/blattNN.tex).
+%  Aufgabenblatt und gefuehrte Loesung entstehen daraus durch den
+%  Schalter \mitloesung (siehe Makefile):
+%     \def\mitloesung{0}  -> Aufgabenblatt   (loesung-Umgebungen entfallen)
+%     \def\mitloesung{1}  -> Loesungsblatt   (loesung-Umgebungen sichtbar)
+% ===================================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{get-uebung}[2026/10/15 GET Uebungsblaetter]
+
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[ngerman]{babel}
+\RequirePackage{lmodern}
+\RequirePackage{microtype}
+\RequirePackage[a4paper,top=22mm,bottom=25mm,left=22mm,right=22mm,headheight=14pt]{geometry}
+\RequirePackage{amsmath,amssymb}
+\RequirePackage[locale=DE,per-mode=symbol,separate-uncertainty=true]{siunitx}
+\RequirePackage{enumitem}
+\RequirePackage{xcolor}
+\RequirePackage{comment}
+\RequirePackage{eurosym}
+\RequirePackage[most]{tcolorbox}
+\RequirePackage{fancyhdr}
+\RequirePackage{lastpage}
+\RequirePackage{array,booktabs,tabularx}
+\RequirePackage{graphicx}
+\RequirePackage{tikz}
+\RequirePackage[european,siunitx,straightvoltages]{circuitikz}
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\DeclareSIUnit\EUR{\text{\euro}}
+\usetikzlibrary{calc,arrows.meta,positioning,patterns}
+\RequirePackage[hidelinks]{hyperref}
+
+% ---------- Zaehlpfeile wie im Skript (Pfeil von + nach -) ----------
+\ctikzset{voltage dir=EF}
+\ctikzset{bipoles/length=1.1cm}
+\ctikzset{current/distance=0.5}
+
+% ---------- Farben ----------
+\definecolor{hsublau}{RGB}{0,63,125}
+\definecolor{loesungfarbe}{RGB}{0,110,60}
+\definecolor{hinweisfarbe}{RGB}{190,110,0}
+
+% ---------- Schalter Aufgaben/Loesung ----------
+\newif\ifloesung
+\ifdefined\mitloesung
+  \if1\mitloesung\loesungtrue\else\loesungfalse\fi
+\else
+  \loesungfalse
+\fi
+
+% ---------- Kopfdaten ----------
+\newcommand{\blattnr}{0}
+\newcommand{\blattthema}{Thema}
+\newcommand{\skriptkapitel}{}
+\newcommand{\blatt}[3]{%
+  \renewcommand{\blattnr}{#1}%
+  \renewcommand{\blattthema}{#2}%
+  \renewcommand{\skriptkapitel}{#3}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{hsublau}Grundlagen der Elektrotechnik -- Teil 1: Gleichspannung}
+\rhead{\small\color{hsublau}\ifloesung Lösung \fi Übungsblatt \blattnr}
+\cfoot{\small Seite \thepage\ von \pageref*{LastPage}}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Titelblock, erwartet die Lernziele als Argument (itemize-Inhalt)
+\newcommand{\blattkopf}[1]{%
+  \begin{tcolorbox}[colback=hsublau!6,colframe=hsublau,boxrule=0.8pt,arc=2pt,
+      left=8pt,right=8pt,top=6pt,bottom=6pt]
+    {\Large\bfseries\color{hsublau}
+      \ifloesung Geführte Lösung zu \fi Übungsblatt \blattnr: \blattthema\par}
+    \vspace{4pt}
+    {\small Bearbeitungszeit: ca.\ 60 Minuten \quad$\vert$\quad
+      Skript: \skriptkapitel\par}
+    \vspace{4pt}
+    {\small\bfseries Lernziele -- nach diesem Blatt können Sie \dots\par}
+    \begin{itemize}[nosep,leftmargin=14pt,label=\textbullet]\small
+      #1
+    \end{itemize}
+  \end{tcolorbox}
+  \ifloesung
+    \begin{tcolorbox}[colback=loesungfarbe!6,colframe=loesungfarbe,boxrule=0.5pt,arc=2pt]
+      \small\textbf{Wie Sie diese Lösung nutzen:} Versuchen Sie jede Aufgabe zuerst
+      selbst. Lesen Sie bei Schwierigkeiten nur den nächsten \emph{Schritt} bzw.\ die
+      nächste \emph{Leitfrage} und rechnen Sie dann selbstständig weiter. Die
+      \textcolor{hinweisfarbe}{\textbf{typischen Fehler}} am Ende jeder Aufgabe sind
+      genau die Stellen, an denen in Klausuren die meisten Punkte verloren gehen.
+    \end{tcolorbox}
+  \fi
+  \vspace{2pt}}
+
+% ---------- Aufgaben ----------
+\newcounter{aufgabe}
+% \begin{aufgabe}{Titel}{Minuten}
+\newenvironment{aufgabe}[2]{%
+  \refstepcounter{aufgabe}%
+  \par\medskip\noindent
+  {\large\bfseries\color{hsublau}Aufgabe \blattnr.\theaufgabe: #1}%
+  \hfill{\small\color{hsublau}(ca.\ #2~min)}\par\nopagebreak\smallskip
+}{\par}
+
+% Teilaufgaben a), b), ...
+\newlist{teilaufgaben}{enumerate}{1}
+\setlist[teilaufgaben]{label=\alph*),leftmargin=*,itemsep=2pt,topsep=3pt}
+
+% Gegebene Groessen kompakt
+\newcommand{\gegeben}[1]{\par\noindent\textbf{Gegeben:} #1\par\smallskip}
+
+% Hinweis fuer Studierende (auf beiden Blaettern sichtbar)
+\newtcolorbox{tipp}{colback=hinweisfarbe!7,colframe=hinweisfarbe,boxrule=0.4pt,
+  arc=2pt,left=4pt,right=4pt,top=2pt,bottom=2pt,fontupper=\small,
+  before upper={\textbf{Tipp:}\ }}
+
+% ---------- Loesungen ----------
+\ifloesung
+  \newtcolorbox{loesung}{breakable,enhanced,colback=loesungfarbe!4,
+    colframe=loesungfarbe,boxrule=0.6pt,arc=2pt,left=6pt,right=6pt,
+    title={\textbf{Geführte Lösung zu Aufgabe \blattnr.\theaufgabe}},
+    coltitle=white,fonttitle=\small}
+\else
+  \excludecomment{loesung}
+\fi
+
+% Schritt in der gefuehrten Loesung: \schritt{Ueberschrift}
+\newcommand{\schritt}[1]{\par\smallskip\noindent{\bfseries\color{loesungfarbe}\(\triangleright\) #1}\par\nopagebreak}
+% Leitfrage, die zum Selbstdenken anregen soll
+\newcommand{\leitfrage}[1]{\par\noindent\emph{\color{loesungfarbe!70!black}Leitfrage: #1}\par}
+% Ergebnis hervorheben (Mathe-Modus)
+\newcommand{\ergebnis}[1]{\boxed{#1}}
+% Typische Fehler
+\newcommand{\typfehler}[1]{\par\smallskip\noindent
+  \begin{tcolorbox}[colback=hinweisfarbe!7,colframe=hinweisfarbe,boxrule=0.4pt,
+     arc=2pt,left=4pt,right=4pt,top=2pt,bottom=2pt,fontupper=\small]
+  \textbf{Typische Fehler:} #1\end{tcolorbox}}
+
+% Platz zum Rechnen auf dem Aufgabenblatt (auf Loesung unterdrueckt)
+\newcommand{\rechenplatz}[1]{\ifloesung\else\par\vspace{#1}\fi}
+
+\endinput
