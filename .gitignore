@@ -1,5 +1,5 @@
-# Erzeugte Dateien (mit `make` reproduzierbar)
-build/
+# Hilfsdateien des LaTeX-Builds
+build/tmp/
 *.aux
 *.log
 *.out
